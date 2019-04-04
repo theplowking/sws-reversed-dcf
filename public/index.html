@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Mr Reverse DCF</title>
+<style>
+
+body {
+  font: 16px sans-serif;
+  background: #304459;
+    color: white;
+}
+
+</style>
+<body onload="runMe()">
+  <input type="text" id="stocks" placeholder="Company ticker" style="width:90%;"/>
+  <button type="submit" type="button" onclick="download()">Reverse DCF me</button>
+  
+</body>
+<script>
+function download()
+{
+
+//NasdaqGS:GOOG,NasdaqGS:AMZN,NasdaqGS:FB,NasdaqGS:MTCH,NasdaqGS:MSFT,NasdaqGS:NFLX,NasdaqGS:NVDA,TSX:XID
+retreive(document.getElementById('stocks').value)
+
+}
+
+function retreive(stockList, months)
+{
+
+}
+
+</script>
