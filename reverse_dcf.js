@@ -177,7 +177,10 @@ var appRouter = function (app) {
                 'discount': response.data.analysis.data.extended.data.analysis.value.intrinsic_value.cost_of_equity, 
                 'fcf': Object.values(response.data.analysis.data.extended.data.analysis.value.intrinsic_value.two_stage_fcf.adjust_free_cash_flow_time_series).pop(), 
                 'riskFree': response.data.analysis.data.extended.data.analysis.value.intrinsic_value.risk_free_rate
-            }
+            },
+            share_price: response.data.analysis.data.share_price,
+            past_growth: 100 * response.data.analysis.data.extended.data.analysis.past.net_income_growth_5y,
+            future_growth: 100 * response.data.analysis.data.extended.data.analysis.future.net_income_growth_annual
         };
 
         inputs.result = goalSeek(inputs.assumptions, inputs.goal);

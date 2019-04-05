@@ -12,21 +12,37 @@ body {
 </style>
 <body onload="runMe()">
   <input type="text" id="stocks" placeholder="Company ticker" style="width:90%;"/>
-  <button type="submit" type="button" onclick="download()">Reverse DCF me</button>
-  
+  <button type="submit" type="button" onclick="retreive()">Reverse DCF me</button>
+  <div id="results"></div>
 </body>
 <script>
+
+function runMe()
+{
+}
+
 function download()
 {
-
+console.log("hello");
 //NasdaqGS:GOOG,NasdaqGS:AMZN,NasdaqGS:FB,NasdaqGS:MTCH,NasdaqGS:MSFT,NasdaqGS:NFLX,NasdaqGS:NVDA,TSX:XID
-retreive(document.getElementById('stocks').value)
+retreive()
 
 }
 
-function retreive(stockList, months)
-{
+const retreive = async () => {
+  let stock = document.getElementById('stocks').value;
+  console.log("fetcging "+stock);
+  const response = await fetch("http://localhost:3000/reverse_dcf?stock="+stock);
+  const results = await response.json(); //extract JSON from the http response
+    console.log(results);
+    let text = `A share price of ${results.share_price} implies that ${results.name} will grow free cash by <strong>${results.result.toFixed(2)}%</strong> per year in the short term. In the past 3 years they've grown it at a rate of ${results.past_growth.toFixed(2)}% per year. Analysts estimate they will grow it at a rate of ${results.future_growth.toFixed(2)}% over the next 3 years.`;
 
+    var h = document.createElement("p")                // Create a <h1> element
+    h.innerHTML = text;
+    //var t = document.createTextNode(text);     // Create a text node
+    //h.appendChild(t);                                   // Append the text to <h1>
+    document.body.appendChild(h);
 }
+
 
 </script>
