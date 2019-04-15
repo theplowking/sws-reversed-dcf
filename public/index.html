@@ -18,6 +18,7 @@ body {
   </head>
 
 <body onload="runMe()">
+  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Einstein_tongue.jpg/220px-Einstein_tongue.jpg" style="width:100px;"/>
   <h1>Mr Reverse Discounted Cash Flow aka Implied Growth</h1>
   <input type="text" id="stocks" placeholder="Simply Wall St ticker e.g. NasdaqGS:FB" style="width:250px;"/>
   <button type="submit" type="button" onclick="retreive()">Reverse DCF me!</button>
@@ -56,23 +57,39 @@ const retreive = async () => {
 
     const results = await response.json(); //extract JSON from the http response
     console.log(results);
-    let text = `A share price of ${results.share_price} implies that ${results.name} will grow free cash by <strong>${results.result.growth.toFixed(2)}%</strong> per year in the short term. In the past 3 years they've grown it at a rate of ${results.past_growth.toFixed(2)}% per year. Analysts estimate they will grow it at a rate of ${results.future_growth.toFixed(2)}% over the next 3 years.`;
+
+    if (results.assumptions.fcf < 0)
+    {
+      let text = `${results.name}'s current free cash flow is negative at ${results.assumptions.fcf}, boo.`;
+
+
+    document.getElementById('resultsArea').innerHTML = text;
+    }
+    else
+    {
+      let text = `A share price of ${results.share_price} implies that ${results.name} will grow free cash flow by <strong>${results.result.growth.toFixed(2)}%</strong> per year in the short term. In the past 3 years they've grown earnings at a rate of ${results.past_growth.toFixed(2)}% per year. Analysts estimate they will grow earnings at a rate of ${results.future_growth.toFixed(2)}% over the next 3 years.`;
+
+
 
     document.getElementById('resultsArea').innerHTML = text;
 
-    new Chartist.Line('.ct-chart', {
-      labels: results.result.labels,
-      series: [
-        results.result.series
+
+        new Chartist.Line('.ct-chart', {
+        labels: results.result.labels,
+        series: [
+          results.result.series
+        ]
+      }, {
+      low: 0,
+      showArea: true,
+      fullWidth: true,
+      plugins: [
+        Chartist.plugins.tooltip()
       ]
-    }, {
-    low: 0,
-    showArea: true,
-    fullWidth: true,
-    plugins: [
-      Chartist.plugins.tooltip()
-    ]
-    });
+      });
+    }
+
+    
   } catch(err) {
     // catches errors both in fetch and response.json
     console.log(err);
