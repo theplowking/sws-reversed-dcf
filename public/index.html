@@ -1,47 +1,91 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+<head>
+  <meta charset="utf-8">
 <title>Mr Reverse DCF</title>
 <style>
 
 body {
   font: 16px sans-serif;
-  background: #304459;
-    color: white;
+  /*background: #304459;
+    color: white;*/
 }
 
 </style>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <link rel="stylesheet" href="/css/chartist-plugin-tooltip.css">
+    <script src="js/chartist-plugin-tooltip.js"></script>
+  </head>
+
 <body onload="runMe()">
-  <input type="text" id="stocks" placeholder="Company ticker" style="width:90%;"/>
-  <button type="submit" type="button" onclick="retreive()">Reverse DCF me</button>
-  <div id="results"></div>
+  <h1>Mr Reverse Discounted Cash Flow aka Implied Growth</h1>
+  <input type="text" id="stocks" placeholder="Simply Wall St ticker e.g. NasdaqGS:FB" style="width:250px;"/>
+  <button type="submit" type="button" onclick="retreive()">Reverse DCF me!</button>
+  <br><br>
+  <div id="resultsArea"></div>
+  <br>
+  <h3>Free Cash Flow Stage 1 Detail</h3>
+  <div class="ct-chart ct-major-tenth"></div>
 </body>
 <script>
 
 function runMe()
 {
+
 }
 
 function download()
 {
-console.log("hello");
 //NasdaqGS:GOOG,NasdaqGS:AMZN,NasdaqGS:FB,NasdaqGS:MTCH,NasdaqGS:MSFT,NasdaqGS:NFLX,NasdaqGS:NVDA,TSX:XID
 retreive()
 
 }
 
+
 const retreive = async () => {
   let stock = document.getElementById('stocks').value;
-  console.log("fetcging "+stock);
-  const response = await fetch("http://localhost:3000/reverse_dcf?stock="+stock);
-  const results = await response.json(); //extract JSON from the http response
-    console.log(results);
-    let text = `A share price of ${results.share_price} implies that ${results.name} will grow free cash by <strong>${results.result.toFixed(2)}%</strong> per year in the short term. In the past 3 years they've grown it at a rate of ${results.past_growth.toFixed(2)}% per year. Analysts estimate they will grow it at a rate of ${results.future_growth.toFixed(2)}% over the next 3 years.`;
+  document.getElementById('resultsArea').innerHTML = "Fetching "+stock+" for you...";
 
-    var h = document.createElement("p")                // Create a <h1> element
-    h.innerHTML = text;
-    //var t = document.createTextNode(text);     // Create a text node
-    //h.appendChild(t);                                   // Append the text to <h1>
-    document.body.appendChild(h);
+  try {
+    const response = await fetch("/reverse_dcf?stock="+stock);
+
+    if(response.status!==200)
+       {
+          throw new Error(response.status)
+       }
+
+    const results = await response.json(); //extract JSON from the http response
+    console.log(results);
+    let text = `A share price of ${results.share_price} implies that ${results.name} will grow free cash by <strong>${results.result.growth.toFixed(2)}%</strong> per year in the short term. In the past 3 years they've grown it at a rate of ${results.past_growth.toFixed(2)}% per year. Analysts estimate they will grow it at a rate of ${results.future_growth.toFixed(2)}% over the next 3 years.`;
+
+    document.getElementById('resultsArea').innerHTML = text;
+
+    new Chartist.Line('.ct-chart', {
+      labels: results.result.labels,
+      series: [
+        results.result.series
+      ]
+    }, {
+    low: 0,
+    showArea: true,
+    fullWidth: true,
+    plugins: [
+      Chartist.plugins.tooltip()
+    ]
+    });
+  } catch(err) {
+    // catches errors both in fetch and response.json
+    console.log(err);
+    let text = "Either I can't find it, or its not free cash flow positive...";
+
+    document.getElementById('resultsArea').innerHTML = text;
+
+  }
+
+
+  
+
+  
 }
 
 

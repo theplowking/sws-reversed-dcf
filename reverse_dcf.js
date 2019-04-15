@@ -27,7 +27,8 @@ function goalSeek(assumptions, goal)
     //define the bounds
     for (g = -1000; g <= 10000; g=g+step) {
         oldVal = newVal;
-        newVal = CalcValue(g, assumptions);
+        results = CalcValue(g, assumptions);
+        newVal = results.value;
         //console.log("growth:" + g, "oldVal:" + oldVal, "newVal:" + newVal, "goal:" + goal);
          if (oldVal < goal && newVal > goal)
              break;
@@ -42,13 +43,15 @@ function goalSeek(assumptions, goal)
         let interpolateGrowth = oldGrowth + ( (goal - oldVal) / (newVal - oldVal) * (g - oldGrowth));
 
         oldVal = newVal;
-        newVal = CalcValue(interpolateGrowth, assumptions);
+        results = CalcValue(interpolateGrowth, assumptions);
+        results.growth = interpolateGrowth;
+        newVal = results.value;
 
         //console.log("trying growth:" + interpolateGrowth, "oldVal:" + oldVal, "newVal:" + newVal, "tol:" + (Math.abs(newVal - goal) / goal));
         
         if ((Math.abs(newVal - goal) / goal) < 0.001)
         {
-            return interpolateGrowth;
+            return results;
         }
 
         if( newVal < goal)
@@ -131,6 +134,11 @@ function CalcValue(growthRate, inputs)
     let years = 10;
     let CalcValue = 0;
 
+    let results = {};
+    results.labels = [];
+    results.series = [];
+    results.growth = [];
+
     //first stage
     for (i = 1; i <= years; i++) {
       
@@ -140,18 +148,20 @@ function CalcValue(growthRate, inputs)
 
         CalcValue = CalcValue + (fcf / Math.pow(1 + discount, i));
 
+        results.labels.push('Year ' + i);
+        results.series.push({meta: "Growth rate: " + growth, value: fcf});
+        //results.growth.push(growth);
     }
     
     //Terminal value
-    tv = fcf * (1 + riskFree) / (discount - riskFree);
-    pvtv = tv / Math.pow(1 + discount, years);
+    results.tv = fcf * (1 + riskFree) / (discount - riskFree);
+    results.pvtv = results.tv / Math.pow(1 + discount, years);
     
-    
-    CalcValue = CalcValue + pvtv;
+    results.value = CalcValue + results.pvtv;
 
     //console.log(growthRate, inputs, CalcValue);
-
-    return CalcValue;
+    //console.log(results);
+    return results;
 }
 
 
