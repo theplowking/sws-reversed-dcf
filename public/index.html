@@ -20,13 +20,72 @@ body {
 <body onload="runMe()">
   <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Einstein_tongue.jpg/220px-Einstein_tongue.jpg" style="width:100px;"/>
   <h1>Mr Reverse Discounted Cash Flow aka Implied Growth</h1>
+
+  <p>
+This highly experimental tool can be used to estimate what    <strong>free cash flow growth rate</strong> a given share price for a stock
+    implies. This can be considered a good proxy for how much the market
+    expects a company to grow.
+</p>
+<p>
+    List the stocks using the
+    <a
+        href="https://github.com/SimplyWallSt/Company-Analysis-Model/blob/master/ticker-and-exchange-symbols-guide.md"
+    >
+        Simply Wall St ticker format
+    </a>
+    , note this is quite particular for US stocks (e.g. Facebook is
+    NasdaqGS:FB).
+</p>
   <input type="text" id="stocks" placeholder="Simply Wall St ticker e.g. NasdaqGS:FB" style="width:250px;"/>
   <button type="submit" type="button" onclick="retreive()">Reverse DCF me!</button>
   <br><br>
   <div id="resultsArea"></div>
   <br>
-  <h3>Free Cash Flow Stage 1 Detail</h3>
-  <div class="ct-chart ct-major-tenth"></div>
+  <h3>Free Cash Flow Stage 1 Detail (reporting currency, millions)</h3>
+  <div class="ct-chart ct-minor-seventh" style="height:250px;"></div>
+
+  <h3>What is a reverse DCF</h3>
+
+  <p>
+    The implied growth rate is found using a technique called reverse DCF
+    (discounted cash flow). Rather than the traditional approach of discounting
+    the future free cash flows to arrive at an intrinsic value, in this method
+    we ‘goal seek’ the short term growth rate of free cash flow until the
+    result matches the market cap/ share price.
+</p>
+<p>
+    The exact calculation method is similar to the <a href="https://github.com/SimplyWallSt/Company-Analysis-Model/blob/master/MODEL.markdown#discounted-cash-flows-dcf" target="_blank">Simply Wall St one</a>. The main
+    difference being that no analyst’s forecasts are used, instead the starting
+    point is the most recent ‘adjusted’ free cash flow.
+</p>
+<p>
+    To find the implied growth rate, some of the inputs from Simply Wall St are
+    used:
+</p>
+<ul>
+    <li>
+        The risk (aka discount rate)
+    </li>
+    </li>
+    <li>The current state (aka <a href="https://github.com/SimplyWallSt/Company-Analysis-Model/blob/master/dcf-update-q1-2019.markdown#3-adjusted-historical-free-cash-flow" target="_blank">‘adjusted’ free cash flow</a>)
+</li>
+    <li>The perpetual growth rate (aka the 10 year government bond rate)
+</li>
+    <li>The target (aka the market cap in reporting currency)
+</p>
+</ul>
+<p>
+    Similar to SWS a 10 year Stage 1 is used, with the ‘implied growth’ rate
+    being the starting point that then decays towards the perpetual growth
+    rate.
+</p>
+<p>
+    To see the inputs used in this model, right click and click "Inspect" or press F12 and see the console.
+</p>
+<p>
+    Disclaimer: This tool is 100% experimental and should not be used to make
+    any investment decisions.
+</p>
 </body>
 <script>
 
@@ -67,8 +126,21 @@ const retreive = async () => {
     }
     else
     {
-      let text = `A share price of ${results.share_price} implies that ${results.name} will grow free cash flow by <strong>${results.result.growth.toFixed(2)}%</strong> per year in the short term. In the past 3 years they've grown earnings at a rate of ${results.past_growth.toFixed(2)}% per year. Analysts estimate they will grow earnings at a rate of ${results.future_growth.toFixed(2)}% over the next 3 years.`;
+      let text = `<p>A share price of ${results.share_price} implies that ${results.name} will grow free cash flow by <strong>${results.result.growth.toFixed(2)}%</strong> per year in the short term.\
+      </p>\
+      <p>To put this in perspective:</p>\
+      <UL><LI>In the past 3 years they've grown earnings at a rate of ${results.past_growth.toFixed(2)}% per year.</LI>\
+      <LI>Analysts estimate they will grow earnings at a rate of ${results.future_growth.toFixed(2)}% per year over the next 3 years.</LI>`;
 
+      if ( results.analyst_count > 0){
+        text += `<LI>The analysts estimate for free cash flow growth is ${results.past_fcf_growth.toFixed(2)}% per year over th next 3 years.</li>`;
+
+      }
+      else
+      {
+        text += `<LI>In the past 3 year free cash flow growth was ${results.past_fcf_growth.toFixed(2)}% per year.</li>`;
+      }
+      
 
 
     document.getElementById('resultsArea').innerHTML = text;
