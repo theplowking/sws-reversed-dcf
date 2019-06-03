@@ -1,12 +1,13 @@
 var rp = require('request-promise');
 var errors = require('request-promise/errors');
 var argv = require('minimist')(process.argv.slice(2));
+var dcf = require('./public/js/dcf.js');
 
 run('ASX:TLS');
 
 function run(stock)
 {
-    // console.log(CalcValue(
+    // console.log(dcf.CalcValue(
     //         -5,
     //         {
     //             'discount': 0.1, 
@@ -27,7 +28,7 @@ function goalSeek(assumptions, goal)
     //define the bounds
     for (g = -1000; g <= 10000; g=g+step) {
         oldVal = newVal;
-        results = CalcValue(g, assumptions);
+        results = dcf.CalcValue(g, assumptions);
         newVal = results.value;
         //console.log("growth:" + g, "oldVal:" + oldVal, "newVal:" + newVal, "goal:" + goal);
          if (oldVal < goal && newVal > goal)
@@ -43,7 +44,7 @@ function goalSeek(assumptions, goal)
         let interpolateGrowth = oldGrowth + ( (goal - oldVal) / (newVal - oldVal) * (g - oldGrowth));
 
         oldVal = newVal;
-        results = CalcValue(interpolateGrowth, assumptions);
+        results = dcf.CalcValue(interpolateGrowth, assumptions);
         results.growth = interpolateGrowth;
         newVal = results.value;
 
@@ -120,49 +121,49 @@ function reverseDCF(stock) {
 
 
 
-function CalcValue(growthRate, inputs)
-{
+// function CalcValueX(growthRate, inputs)
+// {
     
 
-    let discount = inputs.discount;
-    let fcf = inputs.fcf;
-    let riskFree = inputs.riskFree;
+//     let discount = inputs.discount;
+//     let fcf = inputs.fcf;
+//     let riskFree = inputs.riskFree;
 
-    growthRate = growthRate / 100;
+//     growthRate = growthRate / 100;
     
-    let decayFac = 0.7;
-    let years = 10;
-    let CalcValue = 0;
+//     let decayFac = 0.7;
+//     let years = 10;
+//     let dcf.CalcValue = 0;
 
-    let results = {};
-    results.labels = [];
-    results.series = [];
-    results.growth = [];
+//     let results = {};
+//     results.labels = [];
+//     results.series = [];
+//     results.growth = [];
 
-    //first stage
-    for (i = 1; i <= years; i++) {
+//     //first stage
+//     for (i = 1; i <= years; i++) {
       
-        let decay = Math.pow(decayFac, i - 1);
-        let growth = (riskFree + (growthRate - riskFree) * decay);
-        fcf = fcf * (1 + growth);
+//         let decay = Math.pow(decayFac, i - 1);
+//         let growth = (riskFree + (growthRate - riskFree) * decay);
+//         fcf = fcf * (1 + growth);
 
-        CalcValue = CalcValue + (fcf / Math.pow(1 + discount, i));
+//         dcf.CalcValue = dcf.CalcValue + (fcf / Math.pow(1 + discount, i));
 
-        results.labels.push('Year ' + i);
-        results.series.push({meta: "Growth rate: " + growth, value: fcf});
-        //results.growth.push(growth);
-    }
+//         results.labels.push('Year ' + i);
+//         results.series.push({meta: "Growth rate: " + growth, value: fcf});
+//         //results.growth.push(growth);
+//     }
     
-    //Terminal value
-    results.tv = fcf * (1 + riskFree) / (discount - riskFree);
-    results.pvtv = results.tv / Math.pow(1 + discount, years);
+//     //Terminal value
+//     results.tv = fcf * (1 + riskFree) / (discount - riskFree);
+//     results.pvtv = results.tv / Math.pow(1 + discount, years);
     
-    results.value = CalcValue + results.pvtv;
+//     results.value = dcf.CalcValue + results.pvtv;
 
-    //console.log(growthRate, inputs, CalcValue);
-    //console.log(results);
-    return results;
-}
+//     //console.log(growthRate, inputs, dcf.CalcValue);
+//     //console.log(results);
+//     return results;
+// }
 
 
 
