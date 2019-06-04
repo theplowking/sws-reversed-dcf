@@ -4,8 +4,7 @@ console.log("DCF is loaded");
 
     exports.CalcValue = function (growthRate, inputs)
     {
-        
-
+            
         let discount = inputs.discount;
         let fcf = inputs.fcf;
         let riskFree = inputs.riskFree;
@@ -41,8 +40,8 @@ console.log("DCF is loaded");
         
         results.value = CalcValue + results.pvtv;
 
-        //console.log(growthRate, inputs, CalcValue);
-        //console.log(results);
+        console.log(growthRate, inputs, CalcValue);
+        console.log(results);
         return results;
     };
 

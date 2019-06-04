@@ -193,7 +193,8 @@ var appRouter = function (app) {
             past_growth: 100 * response.data.analysis.data.extended.data.analysis.past.net_income_growth_5y,
             past_fcf_growth: 100 * response.data.analysis.data.extended.data.analysis.value.intrinsic_value.two_stage_fcf.growth_cagr_5y,
             future_growth: 100 * response.data.analysis.data.extended.data.analysis.future.net_income_growth_annual,
-            analyst_count: response.data.analysis.data.extended.data.analysis.misc.analyst_count
+            analyst_count: response.data.analysis.data.extended.data.analysis.misc.analyst_count,
+            revenue: response.data.analysis.data.extended.data.analysis.past.revenue,
         };
 
         inputs.result = goalSeek(inputs.assumptions, inputs.goal);
