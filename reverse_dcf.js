@@ -78,7 +78,7 @@ function goalSeek(assumptions, goal)
 function options(ticker) {
   
     return {
-        uri: 'https://simplywall.st/api/company/'+ticker+'?include=info,score,score.snowflake,analysis.extended.raw_data&version=2.0',
+        uri: 'https://api.simplywall.st/api/company/'+ticker+'?include=info,score,score.snowflake,analysis.extended.raw_data&version=2.0',
         headers: {
             'Accept':       'application/vnd.simplywallst.v2'
         },
@@ -91,18 +91,19 @@ function options(ticker) {
 function reverseDCF(stock) {
     rp(options(stock))
     .then(function (response) {
+//console.log(response);
 
         let inputs = {
             name: response.data.name,
             goal: response.data.analysis.data.extended.data.raw_data.data.market_cap.reported / response.data.analysis.data.extended.data.raw_data.data.currency_info.reporting_unit,
             assumptions: {
                 'discount': response.data.analysis.data.extended.data.analysis.value.intrinsic_value.cost_of_equity, 
-                'fcf': Object.values(response.data.analysis.data.extended.data.analysis.value.intrinsic_value.two_stage_fcf.adjust_free_cash_flow_time_series).pop(), 
+                'fcf': Object.values(response.data.analysis.data.extended.data.analysis.value.intrinsic_value.two_stage_fcf.annualized_adjust_free_cash_flow_time_series).pop(), 
                 'riskFree': response.data.analysis.data.extended.data.analysis.value.intrinsic_value.risk_free_rate
             }
         };
 
-        //console.log(inputs);
+        console.log(inputs);
 
         return goalSeek(inputs.assumptions, inputs.goal);
 
@@ -186,7 +187,7 @@ var appRouter = function (app) {
             goal: response.data.analysis.data.extended.data.raw_data.data.market_cap.reported / response.data.analysis.data.extended.data.raw_data.data.currency_info.reporting_unit,
             assumptions: {
                 'discount': response.data.analysis.data.extended.data.analysis.value.intrinsic_value.cost_of_equity, 
-                'fcf': Object.values(response.data.analysis.data.extended.data.analysis.value.intrinsic_value.two_stage_fcf.adjust_free_cash_flow_time_series).pop(), 
+                'fcf': Object.values(response.data.analysis.data.extended.data.analysis.value.intrinsic_value.two_stage_fcf.annualized_adjust_free_cash_flow_time_series).pop(), 
                 'riskFree': response.data.analysis.data.extended.data.analysis.value.intrinsic_value.risk_free_rate
             },
             share_price: response.data.analysis.data.share_price,
@@ -204,7 +205,8 @@ var appRouter = function (app) {
 
     })
     .catch(function (err) {
-         res.status(500).send( "Unable to find "+stock );
+         console.log(err);
+         //res.status(500).send( "Unable to find "+stock );
     });
 
     
