@@ -2,7 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>Mr Reverse DCF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Valuation Tool</title>
 <style>
 
 body{
@@ -54,9 +55,9 @@ body{
 
 <h1 class="title">SEARCH FOR A COMPANY</h1>
 <input type="text" id="searchBox" 
-class="search-field" autoFocus placeholder="e.g. Facebook" />
+class="search-field" autoFocus placeholder="e.g. Facebook, ASX:TLS" />
 <ul id="searchResults" class="term-list hidden"></ul>
-
+<h1 class="title">To learn how much it's worth</h1>
 </body>
 
  <script>
@@ -93,7 +94,7 @@ var appendResults = function (results) {
   for (var i=0; i < results.length && i < 5; i++) {
     var li = document.createElement("li");
     
-    li.innerHTML = '<a href="/' + results[i].value + '">' + results[i].value + ' - ' + results[i].label + '</a>';
+    li.innerHTML = '<a href="/value2.html?' + results[i].value + '">' + results[i].value + ' - ' + results[i].label + '</a>';
     ul.appendChild(li);
   }
   

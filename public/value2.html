@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
-<title>Mr Reverse DCF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Valuation Tool</title>
 <style>
 
 body {
   font: 16px sans-serif;
   /*background: #304459;
     color: white;*/
+    max-width: 720px; 
+  margin: 0 auto !important; 
+  float: none !important; 
 }
 
 </style>
@@ -19,16 +23,37 @@ body {
     <script src="js/chartist-bar-labels.js"></script>
     <script src="js/dcf.js"></script>
     <script src="js/scenarios.js"></script>
+      <!-- Dragdealer JS -->
+  <script src="js/dragdealer.js"></script>
+  <!-- Dragdealer CSS -->
+  <link  href="css/dragdealer.css" rel="stylesheet" type="text/css">
   </head>
 
 <body onload="runMe()">
- 
-<img src="https://pbs.twimg.com/media/CdowKwAUUAE2OhQ.jpg" style="width: 80px"/>DECADENCE Dessert Bar Stock Valuation Tool (C) 
-  <input type="text" id="stocks" value="NasdaqGS:FB" placeholder="Simply Wall St ticker e.g. NasdaqGS:FB" style="width:250px;"/>
+<p>🔙 <a href="/search.html">Value another stock</a>
+<p>
+<span id="heading">What is the fair value of...</span>
+<input type="text" id="growthInput" style="font-size: 16px; width: 32px;"><span></span>% per year for the next 3 years</span>
+<span id="heading0"></span>
+
+</p>
+<!-- <p>
+  <span id="heading1"></span>
+</p> -->
+  <!-- <input type="text" id="stocks" value="NasdaqGS:FB" placeholder="Simply Wall St ticker e.g. NasdaqGS:FB" style="width:250px;"/>
   <button type="submit" type="button" onclick="download()">Show me the money!</button>
-<br><br>
-<div style="width: 250px; display:inline-block; border: solid 1px #eee;vertical-align: top;">
-  <h5>Next 3 years growth rate</h5>
+<br><br> -->
+
+
+<!-- <div style="max-width: 400px;
+
+    width: 90%;
+    display: inline-block;
+    border: solid 3px #f4c63e;
+    background: #e0e0e0;
+    vertical-align: top;
+    padding: 15px;">
+  
       <div class="slider-container">
 
         <div class="slider-labels">
@@ -42,45 +67,75 @@ body {
         <input id="growthSlider" type="range" min="-50" max="200" step="1" value="0" class="slider">  
     </div>
 
-    Growth rate: <input type="text" id="growthInput">%<br><br>
-    <div id="growthArea"></div>
+</div> -->
+
+
+
+  
+ 
+  <h5 style="margin-top: 0;text-align: center;">Share Price Scenarios</h5>
+  <div id="barChart" class="ct-chart ct-minor-seventh" style="height:200px;"></div>
+
+<div style="width: 100%;
+    display: inline-block;
+    background: #9a9a9a;
+    padding: 15px 0;">
+        <h5  id="heading2" style="margin-top: 0;text-align: center;">How much do you think XXX will grow?</h5>
+      <div id="just-a-slider" class="dragdealer">
+          <div class="handle red-bar">
+            <span class="value" id="just-a-slider-text">0%</span>
+            <span class="actuator">|||</span>
+          </div>
+        </div>
 </div>
 
-<div style="width: 250px; display:inline-block; border: solid 1px #eee;vertical-align: top;">
-  <h5>Risk (discount rate)</h5>
-      <div class="slider-container">
 
-        <div class="slider-labels">
-          <div class='label'>Low</div>
-          <div class='label'>Medium</div>
-          <div class='label'>High</div>
-          <div class='label'>Very High</div>
-        </div> 
-        <input id="riskSlider" type="range" min="8" max="14" step="0.1" value="10" class="slider">  
+        <div id="resultsArea" style="font-size: 14px;">
+            <p id="persp"></p>
+        </div>
+
+
+
+  <p>
+ <a href="#" onClick="showDiv();">Show Valuation Model Assumptions</a>
+</p>
+<div id="bonus" style="display: none;" >
+
+    <div style="width: 250px; display:inline-block; border: solid 1px #eee;vertical-align: top;">
+      <h5>Risk (discount rate)</h5>
+          <div class="slider-container">
+
+            <div class="slider-labels">
+              <div class='label'>Low</div>
+              <div class='label'>Medium</div>
+              <div class='label'>High</div>
+              <div class='label'>Very High</div>
+            </div> 
+            <input id="riskSlider" type="range" min="8" max="14" step="0.1" value="10" class="slider">  
+        </div>
+
+        Discount rate: <input type="text" id="riskInput">%
     </div>
 
-    Discount rate: <input type="text" id="riskInput">%
+    <div style="width: 250px; display:inline-block; border: solid 1px #eee;vertical-align: top;">
+      <h5>Free Cash Flow Today</h5>
+
+        Free Cash Flow: <input type="text" id="fcfInput" value="1000">M
+    </div>
+
+    <div style="width: 250px; display:inline-block; border: solid 1px #eee;vertical-align: top;">
+      <h5>Long term growth rate (perpetual growth)</h5>
+
+        Perpetual growth: <input type="text" id="riskFreeInput" value="1.9">%
+    </div>
+
+
+  
+
 </div>
 
-<div style="width: 250px; display:inline-block; border: solid 1px #eee;vertical-align: top;">
-  <h5>Free Cash Flow Today</h5>
-
-    Free Cash Flow: <input type="text" id="fcfInput" value="1000">M
-</div>
-
-<div style="width: 250px; display:inline-block; border: solid 1px #eee;vertical-align: top;">
-  <h5>Long term growth rate (perpetual growth)</h5>
-
-    Perpetual growth: <input type="text" id="riskFreeInput" value="1.9">%
-</div>
-
-  <br>
-  <div id="resultsArea"></div>
- 
-  <h3>Share Price Scenarios</h3>
-  <div id="barChart" class="ct-chart ct-minor-seventh" style="height:250px;"></div>
-  <h3>Next 10 years Cash Flows</h3>
-  <div id="lineChart" class="ct-chart ct-minor-seventh" style="height:250px;"></div>
+<h5 style="margin-top: 0;text-align: center;">Next 10 years Cash Flows</h5>
+  <div id="lineChart" class="ct-chart ct-minor-seventh" style="height:200px;"></div>
 
   
 </body>
@@ -99,9 +154,16 @@ var growthSlide = document.getElementById('growthSlider'),
     fcfInput = document.getElementById("fcfInput"),
     riskFreeInput = document.getElementById("riskFreeInput");
 
+function showDiv()
+{
+ document.getElementById('bonus').style.display = "block";
+}
 
 function runMe()
 {
+
+  retreive(window.location.search.substr(1));
+
 
 }
 
@@ -113,9 +175,12 @@ retreive();
 }
 
 
-const retreive = async () => {
-  let stock = document.getElementById('stocks').value;
-  document.getElementById('resultsArea').innerHTML = "Fetching "+stock+" for you...";
+var retreive = async function(stock) {
+  if(!stock)
+  {
+    stock = document.getElementById('stocks').value;
+  } 
+  document.getElementById('persp').innerHTML = "Fetching "+stock+" for you...";
 
   try {
     const response = await fetch("/reverse_dcf?stock="+stock);
@@ -134,7 +199,7 @@ const retreive = async () => {
      //  fcfInput.value = results.revenue * 0.1;
      // }
     //load the values
-    growthSlide.value = growthInput.value = results.result ? results.result.growth.toFixed(2) : 10;
+    growthInput.value = results.result ? results.result.growth.toFixed(2) : 10;
     riskSlide.value = riskInput.value = (results.assumptions.discount * 100).toFixed(2);
     fcfInput.value = results.assumptions.fcf.toFixed(2);
     riskFreeInput.value = (results.assumptions.riskFree * 100).toFixed(2);
@@ -180,38 +245,85 @@ const retreive = async () => {
         }
     }
     
-  
-    updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP);
+    document.getElementById('heading').innerHTML = "If " + stock + " grows earnings by ";
+  document.getElementById('heading0').innerHTML = "it should be worth <strong>$" + results.share_price + "</strong>";
+  //document.getElementById('heading1').innerHTML = "The current share price is <strong>$" + results.share_price + "</strong>";
+  document.getElementById('heading2').innerHTML = "How much do YOU think " + stock + " will grow earnings per year?";
 
-    growthSlide.onchange = function() {
-    growthInput.value = this.value;
-    updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP);
-}
+  let text = `<p>To put this into perspective:<br>
+               <ul><li>   Low case: ${lowCase} earnings growth @ <strong>${lowGrowth.toFixed(2)}%</strong> per year</li>
+              <li>High case: ${highCase} earnings growth @ <strong>${highGrowth.toFixed(2)}%</strong> per year</li>
+              <li id="persp"></li></ul>`;
+    document.getElementById('resultsArea').innerHTML = text;
+
+  
+    // updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock);
+
+    // growthSlide.onchange = function() {
+    //     growthInput.value = this.value;
+    //     updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock);
+    // }
 
 
 
 riskSlide.onchange = function() {
     riskInput.value = this.value;
-    updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP);
+    updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, results.share_price);
 }
 
-growthInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP); }
-riskInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP); }
-fcfInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP); }
-riskFreeInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP); }
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+    var context = this, args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+};
+
+// var updateBounce = debounce( function(){
+//     growthInput.value = growthSlide.value;
+//      updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock);
+    
+//     console.log("bounce again");
+// }, 250)
+
+
+// growthSlide.addEventListener("input", updateBounce, false);
+console.log((growthInput.value + 50) / 250, growthInput.value, ( (growthInput.value + 50) / 250 * 250) - 50);
+new Dragdealer('just-a-slider', {
+    x: (parseFloat(growthInput.value) + 50) / 250,
+    animationCallback: function(x, y) {
+      //$('#just-a-slider .value').text(Math.round(x * 100));
+      var newGrowth = (x * 250) - 50;
+      document.getElementById('just-a-slider-text').innerHTML = newGrowth.toFixed(1) + '%';
+      growthInput.value = newGrowth;
+      
+     updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, results.share_price);
+
+    }
+  });
+
+var growthToAbs = function (x){
+
+}
+
+growthInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, results.share_price); }
+riskInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, results.share_price); }
+fcfInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, results.share_price); }
+riskFreeInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, results.share_price); }
   
-  let text = `<p>Low case: ${lowCase} cash flow growth @ ${lowGrowth.toFixed(2)}% per year
-              <br>High case: ${highCase} cash flow growth @ ${highGrowth.toFixed(2)}% per year
-              <br>Last share price: ${results.share_price}`;
-
-
-    document.getElementById('resultsArea').innerHTML = text;
-
+  
     
   } catch(err) {
     // catches errors both in fetch and response.json
     console.log(err);
-    let text = "Either I can't find it, or its not free cash flow positive...";
+    let text = "Either I can't find it, or its not free cash flow positive... sorry, try another stock 😞";
 
     document.getElementById('resultsArea').innerHTML = text;
 

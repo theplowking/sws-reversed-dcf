@@ -1,6 +1,6 @@
 
 
-function updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal)
+function updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, originalSP)
 {
 console.log("first results");
 	let results = dcf.CalcValue(growthInput.value, {
@@ -9,12 +9,19 @@ console.log("first results");
                 'riskFree': riskFreeInput.value / 100
             });
 	
-	let text = `${ (results.series[9].value / fcfInput.value).toFixed(1) }x in 10 years`;
+	let text = `Equivilent to <strong>${ (results.series[9].value / fcfInput.value).toFixed(1) }x</strong> in 10 years`;
 
 
-    document.getElementById('growthArea').innerHTML = text;
+    document.getElementById('persp').innerHTML = text;
 
+    //document.getElementById('heading').innerHTML = "If " + stock + " grows by " + growthInput.value + "% per year in next 3 years, it should be worth $" + Math.round(results.value * mktCaptoSP,2);
+
+    document.getElementById('heading').innerHTML = "If " + stock + " grows earnings by ";
+
+  document.getElementById('heading0').innerHTML = "it should be worth <strong>$" + (results.value * mktCaptoSP).toFixed(1) + "</strong>";
 	//render the 1st pahse
+
+
 
 	new Chartist.Line('#lineChart', {
         labels: results.labels,
@@ -53,9 +60,9 @@ console.log("first results");
 	//render the bar
 
 new Chartist.Bar('#barChart', {
-        labels: ['Current Price', 'Low Case (' + lowCase +')', 'Average', 'High Case (' + highCase + ')'],
+        labels: ['💸 Your Model 💸', 'Current Price', 'Low Case (' + lowCase +')', 'High Case (' + highCase + ')'],
         series: [
-          [results.value * mktCaptoSP, lowResult.value * mktCaptoSP, avgResult.value * mktCaptoSP, highResult.value * mktCaptoSP]
+          [results.value * mktCaptoSP, originalSP, lowResult.value * mktCaptoSP, /*avgResult.value * mktCaptoSP,*/ highResult.value * mktCaptoSP]
         ]
       }, {
   
@@ -69,7 +76,7 @@ new Chartist.Bar('#barChart', {
 }).on('draw', function(data) {
   if(data.type === 'bar') {
     data.element.attr({
-      style: 'stroke-width: 100px'
+      style: 'stroke-width: 75px'
     });
   }
 });
