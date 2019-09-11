@@ -302,7 +302,7 @@ new Dragdealer('just-a-slider', {
       //$('#just-a-slider .value').text(Math.round(x * 100));
       var newGrowth = (x * 250) - 50;
       document.getElementById('just-a-slider-text').innerHTML = newGrowth.toFixed(1) + '%';
-      growthInput.value = newGrowth;
+      growthInput.value = newGrowth.toFixed(1);
       
      updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, results.share_price);
 

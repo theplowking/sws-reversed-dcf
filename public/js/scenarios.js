@@ -18,7 +18,7 @@ console.log("first results");
 
     document.getElementById('heading').innerHTML = "If " + stock + " grows earnings by ";
 
-  document.getElementById('heading0').innerHTML = "it should be worth <strong>$" + (results.value * mktCaptoSP).toFixed(1) + "</strong>";
+  document.getElementById('heading0').innerHTML = "it should be worth <strong>$" + (results.value * mktCaptoSP).toFixed(2) + "</strong>";
 	//render the 1st pahse
 
 
