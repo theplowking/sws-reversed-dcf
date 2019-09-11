@@ -1,181 +1,139 @@
 <!DOCTYPE html>
+<html>
 <head>
   <meta charset="utf-8">
-<title>Mr Reverse DCF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Valuation Tool</title>
 <style>
 
-body {
+body{
+  text-align: center;
+  background: #f2f2f2;
   font: 16px sans-serif;
-  /*background: #304459;
-    color: white;*/
+}
+.title{
+  width: 100%;
+  margin: 3em 0 1em;
+  text-align: center;
+  }
+.search-field{
+
+  font: 16px sans-serif;
+  display: block;
+  width: 90%;
+  max-width: 400px;
+  margin: 1em auto 0;
+  padding: .5em 8px;
+  border: 1px solid #999;
+    }
+.term-list{
+  list-style: none inside;
+  width: 90%;
+  max-width: 400px;
+  margin: 0 auto 2em;
+  text-align: left;
+  color: #777;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+ .term-list li{
+    padding: .5em 0;
+    border-bottom: 1px solid #eee;
+    }
+ .term-list strong{
+    color: #444;
 }
 
+.hidden{
+  display: none;
+}
 </style>
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
-    <link rel="stylesheet" href="/css/chartist-plugin-tooltip.css">
-    <script src="js/chartist-plugin-tooltip.js"></script>
+   
   </head>
 
-<body onload="runMe()">
-  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Einstein_tongue.jpg/220px-Einstein_tongue.jpg" style="width:100px;"/>
-  <h1>Mr Reverse Discounted Cash Flow aka Implied Growth</h1>
+<body>
 
-  <p>
-This highly experimental tool can be used to estimate what    <strong>free cash flow growth rate</strong> a given share price for a stock
-    implies. This can be considered a good proxy for how much the market
-    expects a company to grow.
+<h1 class="title">VALUE ANY STOCK</h1>
+<input type="text" id="searchBox" 
+class="search-field" autoFocus placeholder="e.g. Facebook, ASX:TLS" />
+<ul id="searchResults" class="term-list hidden"></ul>
+<br><br>
+<p>This tool helps you understand how much a stock is worth using a valuation technique called discounted cash flow.<br><br><br>
+	Remember: The share price of a company is the markets estimate of future earnings.<br><br>
+	This means you buy a stock when you believe the market has <b>under estimated</b> its future earnings.<br><br>
+	(Don't worry, the tool is very easy to use!)<br><br>
 </p>
-<p>
-    List the stocks using the
-    <a
-        href="https://github.com/SimplyWallSt/Company-Analysis-Model/blob/master/ticker-and-exchange-symbols-guide.md"
-    >
-        Simply Wall St ticker format
-    </a>
-    , note this is quite particular for US stocks (e.g. Facebook is
-    NasdaqGS:FB).
-</p>
-  <input type="text" id="stocks" placeholder="Simply Wall St ticker e.g. NasdaqGS:FB" style="width:250px;"/>
-  <button type="submit" type="button" onclick="retreive()">Reverse DCF me!</button>
-  <br><br>
-  <div id="resultsArea"></div>
-  <br>
-  <h3>Free Cash Flow Stage 1 Detail (reporting currency, millions)</h3>
-  <div class="ct-chart ct-minor-seventh" style="height:250px;"></div>
 
-  <h3>What is a reverse DCF</h3>
-
-  <p>
-    The implied growth rate is found using a technique called reverse DCF
-    (discounted cash flow). Rather than the traditional approach of discounting
-    the future free cash flows to arrive at an intrinsic value, in this method
-    we ‘goal seek’ the short term growth rate of free cash flow until the
-    result matches the market cap/ share price.
-</p>
-<p>
-    The exact calculation method is similar to the <a href="https://github.com/SimplyWallSt/Company-Analysis-Model/blob/master/MODEL.markdown#discounted-cash-flows-dcf" target="_blank">Simply Wall St one</a>. The main
-    difference being that no analyst’s forecasts are used, instead the starting
-    point is the most recent ‘adjusted’ free cash flow.
-</p>
-<p>
-    To find the implied growth rate, some of the inputs from Simply Wall St are
-    used:
-</p>
-<ul>
-    <li>
-        The risk (aka discount rate)
-    </li>
-    </li>
-    <li>The current state (aka <a href="https://github.com/SimplyWallSt/Company-Analysis-Model/blob/master/dcf-update-q1-2019.markdown#3-adjusted-historical-free-cash-flow" target="_blank">‘adjusted’ free cash flow</a>)
-</li>
-    <li>The perpetual growth rate (aka the 10 year government bond rate)
-</li>
-    <li>The target (aka the market cap in reporting currency)
-</p>
-</ul>
-<p>
-    Similar to SWS a 10 year Stage 1 is used, with the ‘implied growth’ rate
-    being the starting point that then decays towards the perpetual growth
-    rate.
-</p>
-<p>
-    To see the inputs used in this model, right click and click "Inspect" or press F12 and see the console.
-</p>
-<p>
-    Disclaimer: This tool is 100% experimental and should not be used to make
-    any investment decisions.
-</p>
 </body>
-<script>
 
-function runMe()
-{
+ <script>
 
-}
-
-function download()
-{
-//NasdaqGS:GOOG,NasdaqGS:AMZN,NasdaqGS:FB,NasdaqGS:MTCH,NasdaqGS:MSFT,NasdaqGS:NFLX,NasdaqGS:NVDA,TSX:XID
-retreive()
-
-}
+var input = document.getElementById("searchBox"),
+    ul = document.getElementById("searchResults"),
+    termsArray, prefix, terms, results;
 
 
-const retreive = async () => {
-  let stock = document.getElementById('stocks').value;
-  document.getElementById('resultsArea').innerHTML = "Fetching "+stock+" for you...";
-
-  try {
-    const response = await fetch("/reverse_dcf?stock="+stock);
-
-    if(response.status!==200)
-       {
-          throw new Error(response.status)
-       }
-
-    const results = await response.json(); //extract JSON from the http response
-    console.log(results);
-
-    if (results.assumptions.fcf < 0)
-    {
-      let text = `${results.name}'s current free cash flow is negative at ${results.assumptions.fcf}, boo.`;
+var search =  debounce( async function() {
+  inputTerms = input.value.toLowerCase();
 
 
-    document.getElementById('resultsArea').innerHTML = text;
-    }
-    else
-    {
-      let text = `<p>A share price of ${results.share_price} implies that ${results.name} will grow free cash flow by <strong>${results.result.growth.toFixed(2)}%</strong> per year in the short term.\
-      </p>\
-      <p>To put this in perspective:</p>\
-      <UL><LI>In the past 3 years they've grown earnings at a rate of ${results.past_growth.toFixed(2)}% per year.</LI>\
-      <LI>Analysts estimate they will grow earnings at a rate of ${results.future_growth.toFixed(2)}% per year over the next 3 years.</LI>`;
+		  try {
+		    let response = await fetch(`https://api.simplywall.st/api/search/${inputTerms}?mode=no-cors`);
 
-      if ( results.analyst_count > 0){
-        text += `<LI>The analysts estimate for free cash flow growth is ${results.past_fcf_growth.toFixed(2)}% per year over th next 3 years.</li>`;
+		    let results = await response.json();
+		    appendResults(results);
+		    console.log(results);
+		   
+		} catch(err) {
+	    // catches errors both in fetch and response.json
+	    console.log(err);
 
-      }
-      else
-      {
-        text += `<LI>In the past 3 year free cash flow growth was ${results.past_fcf_growth.toFixed(2)}% per year.</li>`;
-      }
-      
+	  }
+	
+   
+}, 250);
 
 
-    document.getElementById('resultsArea').innerHTML = text;
-
-
-        new Chartist.Line('.ct-chart', {
-        labels: results.result.labels,
-        series: [
-          results.result.series
-        ]
-      }, {
-      low: 0,
-      showArea: true,
-      fullWidth: true,
-      plugins: [
-        Chartist.plugins.tooltip()
-      ]
-      });
-    }
-
+var appendResults = function (results) {
+  clearResults();
+  
+  for (var i=0; i < results.length && i < 5; i++) {
+    var li = document.createElement("li");
     
-  } catch(err) {
-    // catches errors both in fetch and response.json
-    console.log(err);
-    let text = "Either I can't find it, or its not free cash flow positive...";
-
-    document.getElementById('resultsArea').innerHTML = text;
-
+    li.innerHTML = '<a href="/value2.html?' + results[i].value + '">' + results[i].value + ' - ' + results[i].label + '</a>';
+    ul.appendChild(li);
   }
-
-
   
+  if ( ul.className !== "term-list") {
+    ul.className = "term-list";
+  }
+};
 
-  
-}
+var clearResults = function() {
+  ul.className = "term-list hidden";
+  ul.innerHTML = '';
+};
+
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
+input.addEventListener("keyup", search, false);
 
 
-</script>
+    </script>
+    
+</html>
+
+

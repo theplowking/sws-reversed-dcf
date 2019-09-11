@@ -3,6 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stock Valuation Tool</title>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
 <style>
 
 body {
@@ -14,8 +15,16 @@ body {
   float: none !important; 
 }
 
+.ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-point, .ct-series-a .ct-slice-donut {
+    stroke: #9a9a9ac2
+}
+
+.ct-bar:first-of-type {
+  stroke: #d70206;
+}
+
 </style>
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    
     <link rel="stylesheet" href="/css/slider.css">
     <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
     <link rel="stylesheet" href="/css/chartist-plugin-tooltip.css">
@@ -30,16 +39,14 @@ body {
   </head>
 
 <body onload="runMe()">
-<p>🔙 <a href="/search.html">Value another stock</a>
+<p>🔙 <a href="/index.html">Value another stock</a>
 <p>
 <span id="heading">What is the fair value of...</span>
 <input type="text" id="growthInput" style="font-size: 16px; width: 32px;"><span></span>% per year for the next 3 years</span>
 <span id="heading0"></span>
 
 </p>
-<!-- <p>
-  <span id="heading1"></span>
-</p> -->
+
   <!-- <input type="text" id="stocks" value="NasdaqGS:FB" placeholder="Simply Wall St ticker e.g. NasdaqGS:FB" style="width:250px;"/>
   <button type="submit" type="button" onclick="download()">Show me the money!</button>
 <br><br> -->
@@ -137,6 +144,9 @@ body {
 <h5 style="margin-top: 0;text-align: center;">Next 10 years Cash Flows</h5>
   <div id="lineChart" class="ct-chart ct-minor-seventh" style="height:200px;"></div>
 
+<p>
+  <span id="heading4" style="font-size: 14px;"></span>
+</p>
   
 </body>
 <script>
@@ -249,6 +259,7 @@ var retreive = async function(stock) {
   document.getElementById('heading0').innerHTML = "it should be worth <strong>$" + results.share_price + "</strong>";
   //document.getElementById('heading1').innerHTML = "The current share price is <strong>$" + results.share_price + "</strong>";
   document.getElementById('heading2').innerHTML = "How much do YOU think " + stock + " will grow earnings per year?";
+    document.getElementById('heading4').innerHTML = "After 10 years cash flow is assumed to grow at " + riskFreeInput.value + "% per year forever, as this is discounted to todays money the value over time becomes negligible.";
 
   let text = `<p>To put this into perspective:<br>
                <ul><li>   Low case: ${lowCase} earnings growth @ <strong>${lowGrowth.toFixed(2)}%</strong> per year</li>
