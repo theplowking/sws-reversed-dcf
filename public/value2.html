@@ -3,6 +3,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stock Valuation Tool</title>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45890534-8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45890534-8');
+</script>
+
 <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
 <style>
 
@@ -13,6 +23,7 @@ body {
     max-width: 720px; 
   margin: 0 auto !important; 
   float: none !important; 
+    padding: 0 5px;
 }
 
 .ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-slice-donut {
@@ -25,6 +36,14 @@ body {
 
 .ct-bar:first-of-type {
   stroke: #2f7fee;
+}
+
+.ct-bar:nth-of-type(2) {
+  stroke: #71e7d6;
+}
+
+.ct-bar:nth-of-type(3) {
+  stroke: #bc4786;
 }
 
 #lineChart .ct-label.ct-horizontal.ct-end{
@@ -352,14 +371,14 @@ var retreive = async function(stock) {
     {
       if ( results.future_growth > results.past_growth )
       {
-         highCase = 'Analysts Forecasts';
+         highCase = 'Analyst Target';
         var highGrowth = results.future_growth;
         var lowCase = 'Past Earnings';
         lowGrowth = results.past_growth;
       }
       else
       {
-         lowCase = 'Analysts Forecasts';
+         lowCase = 'Analyst Target';
         var lowGrowth = results.future_growth;
         var highCase = 'Past Earnings';
         highGrowth = results.past_growth;
@@ -383,16 +402,20 @@ var retreive = async function(stock) {
          highGrowth = results.past_growth;
         }
     }
+
+    //weird hack to replace low case with target if exits
+    lowGrowth = results.price_target;
+
     
     document.getElementById('heading').innerHTML = "If " + stock + " grows earnings by ";
   document.getElementById('heading0').innerHTML = "it should be worth <strong>$" + results.share_price + "</strong>";
   //document.getElementById('heading1').innerHTML = "The current share price is <strong>$" + results.share_price + "</strong>";
   document.getElementById('heading2').innerHTML = stock + " Valuation";
-    document.getElementById('heading4').innerHTML = "Theoretically the perpetual growth rate can not exceed that of the economy. The 10 year government bond rate is typically used as a proxy for this, currently" + riskFreeInput.value + "% per year. Remember this is discounted to todays money the value over time becomes negligible.";
+    document.getElementById('heading4').innerHTML = "Theoretically the perpetual growth rate can not exceed that of the economy. The 10 year government bond rate is typically used as a proxy for this, currently " + riskFreeInput.value + "% per year. Remember this is discounted to todays money the value over time becomes negligible.";
 
   let text = `<p>To put this into perspective:<br>
-               <ul><li>${lowCase} @ <strong>${lowGrowth.toFixed(2)}%</strong> per year</li>
-              <li>${highCase} @ <strong>${highGrowth.toFixed(2)}%</strong> per year</li>
+               <ul><li>${lowCase} growth @ <strong>${lowGrowth.toFixed(2)}%</strong> per year</li>
+              <li>${highCase} growth @ <strong>${highGrowth.toFixed(2)}%</strong> per year</li>
               <li>The industry grew 20% last year</ul>`;
     document.getElementById('resultsArea').innerHTML = text;
 

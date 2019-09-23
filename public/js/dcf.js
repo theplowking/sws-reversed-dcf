@@ -40,8 +40,8 @@ console.log("DCF is loaded");
         
         results.value = CalcValue + results.pvtv;
 
-        console.log(growthRate, inputs, CalcValue);
-        console.log(results);
+        // console.log(growthRate, inputs, CalcValue);
+        // console.log(results);
         return results;
     };
 

@@ -1,8 +1,8 @@
 
 
-function updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, originalSP)
+function updateDCF(targetPrice, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, originalSP)
 {
-console.log("first results");
+
 	let results = dcf.CalcValue(growthInput.value, {
                 'discount': riskInput.value / 100, 
                 'fcf': fcfInput.value, 
@@ -39,11 +39,11 @@ console.log("first results");
       });
 
 
-	lowResult = dcf.CalcValue(lowGrowth, {
-                'discount': riskOriginal, 
-                'fcf': fcfInput.value, 
-                'riskFree': riskFreeInput.value / 100
-            });
+	// lowResult = dcf.CalcValue(lowGrowth, {
+ //                'discount': riskOriginal, 
+ //                'fcf': fcfInput.value, 
+ //                'riskFree': riskFreeInput.value / 100
+ //            });
 
     highResult = dcf.CalcValue(highGrowth, {
                 'discount': riskOriginal, 
@@ -51,19 +51,21 @@ console.log("first results");
                 'riskFree': riskFreeInput.value / 100
             });
 
-    avgResult = dcf.CalcValue((lowGrowth + highGrowth) / 2, {
-                'discount': riskOriginal, 
-                'fcf': fcfInput.value, 
-                'riskFree': riskFreeInput.value / 100
-            });
+
+
+ //    avgResult = dcf.CalcValue((lowGrowth + highGrowth) / 2, {
+ //                'discount': riskOriginal, 
+ //                'fcf': fcfInput.value, 
+ //                'riskFree': riskFreeInput.value / 100
+ //            });
 
 
 	//render the bar
 
 new Chartist.Bar('#barChart', {
-        labels: ['Your Estimate', 'Current Price', lowCase, highCase],
+        labels: ['Your Estimate', 'Current Price', 'Analyst Target'],
         series: [
-          [results.value * mktCaptoSP, originalSP, lowResult.value * mktCaptoSP, /*avgResult.value * mktCaptoSP,*/ highResult.value * mktCaptoSP]
+          [results.value * mktCaptoSP, originalSP, /*lowResult.value * mktCaptoSP, avgResult.value * mktCaptoSP,*/ targetPrice ? targetPrice : highResult.value * mktCaptoSP]
         ]
       }, {
   
