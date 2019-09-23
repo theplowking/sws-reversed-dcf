@@ -403,8 +403,7 @@ var retreive = async function(stock) {
         }
     }
 
-    //weird hack to replace low case with target if exits
-    lowGrowth = results.price_target;
+    
 
     
     document.getElementById('heading').innerHTML = "If " + stock + " grows earnings by ";
@@ -424,6 +423,9 @@ var retreive = async function(stock) {
     if(results.loss_making){
       document.getElementById('loss-warning').innerHTML = stock + " is currently loss making which means we have to make some assumptions on their earnings to calculate their value.";
     }
+
+    //weird hack to replace low case with target if exits
+    lowGrowth = results.price_target;
   
     // updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock);
 
