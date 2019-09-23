@@ -9,18 +9,18 @@
 .dragdealer {
   position: relative;
   height: 30px;
-  background: #EEE;
+  background: #9a9a9a;
 }
 .dragdealer .handle {
   position: absolute;
-  top: 0;
+  top: -19px;
   left: 0;
   cursor: pointer;
 }
 .dragdealer .red-bar {
-  width: 100px;
+  width: 50px;
   height: 30px;
-  background: #CC0000;
+  background: #2f7fee;
   color: #FFF;
   font-size: 14px;
   line-height: 30px;
@@ -30,31 +30,28 @@
   background: #898989;
 }
 
-#just-a-slider {
+.just-a-slider {
   /*position: absolute;*/
   left: 50%;
   top: 50%;
   -webkit-transform: translate(-50%, 0%);
   transform: translate(-50%, 0%);
 
-  height: 60px;
+  height: 12px;
   max-width: 740px;
   width:80%;
   min-width: 320px;
-  border-radius: 3px;
--webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
--moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
-    margin-top: 40px;
+  border-radius: 6px;
+    margin-top: 28px;
 }
 
-#just-a-slider .handle {
-  height: 60px;
-  line-height: 60px;
+.just-a-slider .handle {
+  height: 50px;
+  line-height: 50px;
   border-radius: 3px;
 }
 
-#just-a-slider .value {
+.just-a-slider .value {
   padding: 0 0 0 5px;
   font-size: 30px;
   font-weight: bold;
@@ -63,10 +60,8 @@ box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
     color: black;
 }
 
-#just-a-slider .actuator {
-  padding: 0 0 0 5px;
+.just-a-slider .actuator {
+  padding: 0 0 0 2.5px;
   font-size: 30px;
-  font-weight: bold;
     position: relative;
-    top: -60px;
 }

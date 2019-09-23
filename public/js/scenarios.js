@@ -9,17 +9,18 @@ console.log("first results");
                 'riskFree': riskFreeInput.value / 100
             });
 	
-	let text = `Equivilent to <strong>${ (results.series[9].value / fcfInput.value).toFixed(1) }x</strong> in 10 years`;
 
 
-    document.getElementById('persp').innerHTML = text;
+
+    document.getElementById('growthin10').innerHTML = `${ (results.series[9].value / fcfInput.value).toFixed(1) }x`;
 
     //document.getElementById('heading').innerHTML = "If " + stock + " grows by " + growthInput.value + "% per year in next 3 years, it should be worth $" + Math.round(results.value * mktCaptoSP,2);
 
     document.getElementById('heading').innerHTML = "If " + stock + " grows earnings by ";
 
-  document.getElementById('heading0').innerHTML = "it should be worth <strong>$" + (results.value * mktCaptoSP).toFixed(2) + "</strong>";
+  document.getElementById('heading0').innerHTML = "it should be worth <strong>$" + (results.value * mktCaptoSP).toFixed(2) + "</strong>.";
 	//render the 1st pahse
+  document.getElementById('price').innerHTML = "$" + (results.value * mktCaptoSP).toFixed(2);
 
 
 
@@ -60,7 +61,7 @@ console.log("first results");
 	//render the bar
 
 new Chartist.Bar('#barChart', {
-        labels: ['💸 Your Model 💸', 'Current Price', 'Low Case (' + lowCase +')', 'High Case (' + highCase + ')'],
+        labels: ['Your Estimate', 'Current Price', lowCase, highCase],
         series: [
           [results.value * mktCaptoSP, originalSP, lowResult.value * mktCaptoSP, /*avgResult.value * mktCaptoSP,*/ highResult.value * mktCaptoSP]
         ]
@@ -69,7 +70,7 @@ new Chartist.Bar('#barChart', {
   plugins: [
     Chartist.plugins.ctBarLabels({
       labelInterpolationFnc: function (text) {
-        return text.toFixed(1)
+        return "$" + text.toFixed(1)
       }
     })
   ]

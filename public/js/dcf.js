@@ -29,7 +29,7 @@ console.log("DCF is loaded");
 
             CalcValue = CalcValue + (fcf / Math.pow(1 + discount, i));
 
-            results.labels.push('Year ' + i);
+            results.labels.push(2019 + i);
             results.series.push({meta: "Growth rate: " + growth, value: fcf});
             //results.growth.push(growth);
         }
