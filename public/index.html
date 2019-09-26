@@ -62,17 +62,21 @@ body{
 
 <body>
 
-<h1 class="title">VALUE ANY STOCK</h1>
+<h1 class="title">Stock Valuation Checker</h1>
+<p>The simplest way to understand how much a stock is worth and whether it’s over or undervalued.</p>
 <input type="text" id="searchBox" 
 class="search-field" autoFocus placeholder="e.g. Facebook, ASX:TLS" />
 <ul id="searchResults" class="term-list hidden"></ul>
 <br><br>
-<p>This tool helps you understand how much a stock is worth using a valuation technique called discounted cash flow.<br><br><br>
-	Remember: The share price of a company is the markets estimate of future earnings.<br><br>
-	This means you buy a stock when you believe the market has <b>under estimated</b> its future earnings.<br><br>
-	(Don't worry, the tool is very easy to use!)<br><br>
+<div style="text-align: left;">
+<p>
+	<strong>Remember: </strong>
 </p>
-
+<ul>
+  <li>A company’s stock price is the markets estimate of how much it will earn in the future</li>
+  <li>You buy a stock when you believe the market is under-estimating its future earnings</li>
+</ul>
+</div>
 </body>
 
  <script>
@@ -109,7 +113,7 @@ var appendResults = function (results) {
   for (var i=0; i < results.length && i < 5; i++) {
     var li = document.createElement("li");
     
-    li.innerHTML = '<a href="/value2.html?' + results[i].value + '">' + results[i].value + ' - ' + results[i].label + '</a>';
+    li.innerHTML = '<a href="/value_basic.html?' + results[i].value + '">' + results[i].value + ' - ' + results[i].label + '</a>';
     ul.appendChild(li);
   }
   

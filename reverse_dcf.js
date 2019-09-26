@@ -120,7 +120,7 @@ function reverseDCF(stock) {
     });
 }
 
-var fakeResults = '{"name":"Telstra","goal":43373.305729,"assumptions":{"discount":0.0708,"fcf":1893.6410100000003,"riskFree":0.02312},"share_price":3.65,"past_growth":-9.0955,"past_fcf_growth":-16.51374992894722,"future_growth":2.9985999999999997,"analyst_count":9,"revenue":25259,"result":{"labels":["Year 1","Year 2","Year 3","Year 4","Year 5","Year 6","Year 7","Year 8","Year 9","Year 10"],"series":[{"meta":"Growth rate: 0.045487131159813315","value":1979.7773069914715},{"meta":"Growth rate: 0.03877699181186932","value":2056.547115414004},{"meta":"Growth rate: 0.03407989426830853","value":2126.634023665108},{"meta":"Growth rate: 0.030791925987815966","value":2192.1171811249756},{"meta":"Growth rate: 0.028490348191471178","value":2254.5713628917324},{"meta":"Growth rate: 0.026879243734029824","value":2315.1725360706628},{"meta":"Growth rate: 0.025751470613820878","value":2374.7916335992118},{"meta":"Growth rate: 0.024962029429674615","value":2434.0712522464605},{"meta":"Growth rate: 0.02440942060077223","value":2493.485521214793},{"meta":"Growth rate: 0.024022594420540562","value":2553.385512584426}],"growth":4.548713115981331,"tv":54790.68342356078,"pvtv":27645.41364281917,"value":43339.53086238893}}';
+var fakeResults = '{"name":"Telstra","goal":43373.305729,"assumptions":{"discount":0.0708,"fcf":1893.6410100000003,"riskFree":0.02312},"share_price":3.65,"past_growth":-9.0955,"past_fcf_growth":-16.51374992894722,"future_growth":2.9985999999999997,"analyst_count":9,"revenue":25259,"price_target":10,"loss_making":false,"ind_growth":0.2,"ind_name":"Hello","result":{"labels":["Year 1","Year 2","Year 3","Year 4","Year 5","Year 6","Year 7","Year 8","Year 9","Year 10"],"series":[{"meta":"Growth rate: 0.045487131159813315","value":1979.7773069914715},{"meta":"Growth rate: 0.03877699181186932","value":2056.547115414004},{"meta":"Growth rate: 0.03407989426830853","value":2126.634023665108},{"meta":"Growth rate: 0.030791925987815966","value":2192.1171811249756},{"meta":"Growth rate: 0.028490348191471178","value":2254.5713628917324},{"meta":"Growth rate: 0.026879243734029824","value":2315.1725360706628},{"meta":"Growth rate: 0.025751470613820878","value":2374.7916335992118},{"meta":"Growth rate: 0.024962029429674615","value":2434.0712522464605},{"meta":"Growth rate: 0.02440942060077223","value":2493.485521214793},{"meta":"Growth rate: 0.024022594420540562","value":2553.385512584426}],"growth":4.548713115981331,"tv":54790.68342356078,"pvtv":27645.41364281917,"value":43339.53086238893}}';
 
 
 // function CalcValueX(growthRate, inputs)
@@ -197,7 +197,9 @@ var appRouter = function (app) {
             analyst_count: response.data.analysis.data.extended.data.analysis.misc.analyst_count,
             revenue: response.data.analysis.data.extended.data.analysis.past.revenue,
             price_target: response.data.analysis.data.extended.data.analysis.value.price_target,
-            loss_making: false
+            loss_making: false,
+            ind_growth: response.data.analysis.data.extended.data.statements.past.VsMarketGrowthStatement.data.eps_growth_industry,
+            ind_name: response.data.analysis.data.extended.data.statements.past.VsMarketGrowthStatement.data.industry_name
         };
 
         if(inputs.assumptions.fcf == null || inputs.assumptions.fcf < 0)

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Valuation Checker</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45890534-8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45890534-8');
+</script>
+<script>
+    (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:1497147,hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+<style>
+
+body {
+  font: 14px 'Roboto', sans-serif;
+  /*background: #304459;
+    color: white;*/
+    max-width: 720px; 
+  margin: 0 auto !important; 
+  float: none !important; 
+    padding: 0 5px;
+}
+
+.ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-slice-donut {
+    stroke: #9a9a9ac2
+}
+
+.ct-series-a .ct-point, .ct-series-a .ct-line{
+  stroke: #2f7fee;
+}
+
+.ct-bar:first-of-type {
+  stroke: #2f7fee;
+}
+
+.ct-bar:nth-of-type(2) {
+  stroke: #71e7d6;
+}
+
+.ct-bar:nth-of-type(3) {
+  stroke: #bc4786;
+}
+
+#lineChart .ct-label.ct-horizontal.ct-end{
+  margin-left: -14px;
+}
+
+
+.ct-series-a .ct-area {
+    fill: #307eee;
+}
+.metricHolder{
+  width:100%;
+}
+
+.metric2{
+  width:48%;
+  display: inline-block;
+  text-align: right;
+}
+
+.metric2:first-of-type {
+  text-align: left;
+}
+
+.metric{
+  width:32%;
+  display: inline-block;
+  text-align: center;
+}
+
+.metricText{
+  font-size: 10px;
+}
+
+.metricValue{
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.half{
+  width: 90%;
+    display: inline-block;
+    padding: 10px;
+    vertical-align: top;
+}
+
+@media only screen and (min-width: 480px) {
+  .half{
+  width: 45%;
+}
+}
+
+h4{
+  margin: 5px;
+  text-align: center;
+  color: #9a9a9a;
+}
+h2{
+  text-align: center;margin: 10px
+}
+
+</style>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/slider.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <link rel="stylesheet" href="/css/chartist-plugin-tooltip.css">
+    <script src="js/chartist-plugin-tooltip.js"></script>
+    <script src="js/chartist-bar-labels.js"></script>
+    <script src="js/dcf.js"></script>
+    <script src="js/scenarios.js"></script>
+      <!-- Dragdealer JS -->
+  <script src="js/dragdealer.js"></script>
+  <!-- Dragdealer CSS -->
+  <link  href="css/dragdealer.css" rel="stylesheet" type="text/css">
+  </head>
+
+<body onload="runMe()">
+<p><a href="/index.html" style="text-decoration: none; float: left;font-size: 18px;">🔙</a></p>
+  <h2  id="heading2" style="margin-top: 0;text-align: center;">Stock Valuation</h2>
+
+  <p id="subTitle" style="text-align: center;">How much do you think X can grow?</p>
+
+  <div id="barChart" class="ct-chart ct-minor-seventh" style="height:150px;"></div>
+
+<div style="background: #e5e5e5;
+    padding: 10px;
+    text-align: center;">
+        <h2 style="text-align: left;margin-bottom: 0;">Price ↔️ Growth Estimate</h2>
+
+        <div class="half" style="text-align: left;">
+          <ul style="margin: 0;padding: 5px;">
+            <li style="margin-bottom: 8px;">
+              <span id="heading">What is the fair value of...</span>
+              <input type="text" id="growthInput" style="font-size: 14px; width: 28px;"><span></span>% per year for the next 3 years.</span>
+              <span id="heading0"></span>
+            </li>
+            <li id="context">If you think they will grow more than...
+            </li>
+          </ul>
+        </div>
+
+
+        <div class="half" style="background: white;">
+          <div class="metricHolder">
+            <div  class="metric2" >
+              <div class="metricText">Estimate of Annual Growth</div>
+              <div class="metricValue" id="just-a-slider-text" style="color: #2f7fee;">0%</div>
+            </div>
+            <div  class="metric2">
+              <div class="metricText">Share Price</div>
+              <div class="metricValue" id="price">$0</div>
+            </div>
+            <div  class="metric" style="display: none;">
+              <div class="metricText">Growth in 10 years</div>
+              <div class="metricValue" id="growthin10">0x</div>
+            </div>
+          </div>
+        <div id="just-a-slider" class="just-a-slider dragdealer">
+            <div class="handle red-bar">
+              <span class="actuator">|||</span>
+            </div>
+          </div>
+        <br>
+        <div class="metricHolder" style="max-width: 740px;
+      width: 80%;
+      min-width: 320px;margin: 0 auto">
+            <div  class="metric" style="text-align: left;">
+              <div class="metricText">&nbsp;&nbsp;&nbsp;&nbsp;|<br>-50%</div>
+            </div>
+            <div  class="metric">
+              <div class="metricText"><br>Earnings Growth Rate</div>
+            </div>
+            <div  class="metric" style="text-align: right;">
+              <div class="metricText">|&nbsp;&nbsp;&nbsp;&nbsp;<br>200%</div>
+            </div>
+          </div>
+        </div>
+
+</div>
+
+
+        <div id="resultsArea" style="font-size: 14px;">
+            <p id="persp"></p>
+        </div>
+
+
+
+  <p>
+    <p id="loss-warning" style="color: red;"></p>
+<!--  <a href="#" onClick="showDiv();">Show Detailed Assumptions</a> -->
+</p>
+<div id="bonus" style="display: block;" >
+
+
+ <!--  RISK SLIDER -->
+
+
+<div >
+        <h4>Risk Level</h4>
+        <div class="metricHolder">
+          <div  class="metric" >
+          </div>
+          <div  class="metric">
+            <div class="metricText">Discount Rate</div>
+            <div class="metricValue" ><input type="text" id="riskInput" style="width: 60px;font-size: 30px">%</div>
+          </div>
+          <div  class="metric">
+          </div>
+        </div>
+      <div id="risk-slider" class="just-a-slider dragdealer">
+          <div class="handle red-bar">
+            <span class="actuator">|||</span>
+          </div>
+        </div>
+<br>
+      <div class="metricHolder" style="max-width: 740px;
+    width: 80%;
+    min-width: 320px;margin: 0 auto">
+          <div  class="metric" style="text-align: left;">
+            <div class="metricText">&nbsp;&nbsp;&nbsp;&nbsp;|<br>Low Risk</div>
+          </div>
+          <div  class="metric">
+            <div class="metricText">|<br>Medium Risk</div>
+          </div>
+          <div  class="metric" style="text-align: right;">
+            <div class="metricText">|&nbsp;&nbsp;&nbsp;&nbsp;<br>Very High</div>
+          </div>
+        </div>
+
+</div>
+
+<!--  EARNINGS SLIDER -->
+
+
+<div >
+        <h4>Current Annual Earnings (millions)</h4>
+        <div class="metricHolder">
+          
+          <div  class="metric">
+            <div class="metricText">Your Estimate</div>
+            <div class="metricValue" >$<input type="text" id="fcfInput" style="width: 80px;font-size: 30px"></div>
+          </div>
+          <div  class="metric" >
+            <div class="metricText">Profit Margin</div>
+            <div class="metricValue" id="profit-margin">0%</div>
+          </div>
+          <div  class="metric">
+            <div class="metricText">Last 12 Months</div>
+            <div class="metricValue" id="most-recent">$0</div>
+          </div>
+        </div>
+      <div id="fcf-slider" class="just-a-slider dragdealer">
+          <div class="handle red-bar">
+            <span class="actuator">|||</span>
+          </div>
+        </div>
+<br>
+      <div class="metricHolder" style="max-width: 740px;
+    width: 80%;
+    min-width: 320px;margin: 0 auto">
+          <div  class="metric" style="text-align: left;">
+            <div class="metricText">&nbsp;&nbsp;&nbsp;&nbsp;|<br>0% Revenue</div>
+          </div>
+          <div  class="metric">
+            <div class="metricText"><br>Profit Margin</div>
+          </div>
+          <div  class="metric" style="text-align: right;">
+            <div class="metricText">|&nbsp;&nbsp;&nbsp;&nbsp;<br>100% Revenue</div>
+          </div>
+        </div>
+
+</div>
+
+
+<!--  LONG TERM SLIDER -->
+
+
+<div >
+        <h4>Perpetual Growth Rate</h4>
+        <div class="metricHolder">
+          <div  class="metric" >
+          </div>
+          <div  class="metric">
+            <div class="metricText">Annual Growth Rate</div>
+            <div class="metricValue" ><input type="text" id="riskFreeInput" style="width: 50px;font-size: 30px">%</div>
+          </div>
+          <div  class="metric">
+          </div>
+        </div>
+      <div id="perp-slider" class="just-a-slider dragdealer">
+          <div class="handle red-bar">
+            <span class="actuator">|||</span>
+          </div>
+        </div>
+<br>
+      <div class="metricHolder" style="max-width: 740px;
+    width: 80%;
+    min-width: 320px;margin: 0 auto">
+          <div  class="metric" style="text-align: left;">
+            <div class="metricText">&nbsp;&nbsp;&nbsp;&nbsp;|<br>-5%</div>
+          </div>
+          <div  class="metric">
+            <div class="metricText">|<br>0%</div>
+          </div>
+          <div  class="metric" style="text-align: right;">
+            <div class="metricText">|&nbsp;&nbsp;&nbsp;&nbsp;<br>+5%</div>
+          </div>
+        </div>
+
+      <p id="heading4">
+      </p>
+</div>
+
+
+
+  
+
+</div>
+
+
+
+
+  
+</body>
+<script>
+var lowGrowth = 2;
+var highGrowth = 15;
+var lowCase = '2% per year';
+var highCase = '15% per year';
+var riskOriginal = 0.01;
+var mktCaptoSP = 1;
+
+var growthSlide = document.getElementById('growthSlider'),
+    growthInput = document.getElementById("growthInput"),
+    riskSlide = document.getElementById('riskSlider'),
+    riskInput = document.getElementById("riskInput"),
+    fcfInput = document.getElementById("fcfInput"),
+    riskFreeInput = document.getElementById("riskFreeInput");
+
+function showDiv()
+{
+ document.getElementById('bonus').style.display = "block";
+}
+
+function runMe()
+{
+
+  retreive(window.location.search.substr(1));
+
+
+}
+
+function download()
+{
+//NasdaqGS:GOOG,NasdaqGS:AMZN,NasdaqGS:FB,NasdaqGS:MTCH,NasdaqGS:MSFT,NasdaqGS:NFLX,NasdaqGS:NVDA,TSX:XID
+retreive();
+
+}
+
+
+var retreive = async function(stock) {
+  if(!stock)
+  {
+    stock = document.getElementById('stocks').value;
+  } 
+  document.getElementById('persp').innerHTML = "Fetching "+stock+" for you...";
+
+  try {
+    const response = await fetch("/reverse_dcf?stock="+stock);
+
+    if(response.status!==200)
+       {
+          throw new Error(response.status)
+       }
+
+    const results = await response.json(); //extract JSON from the http response
+    console.log(results);
+
+     // if (results.assumptions.fcf < 0)
+     // {
+     //  //negative FCF
+     //  fcfInput.value = results.revenue * 0.1;
+     // }
+    //load the values
+    growthInput.value = results.result ? results.result.growth.toFixed(2) : 10;
+    riskInput.value = (results.assumptions.discount * 100).toFixed(2);
+    fcfInput.value = results.assumptions.fcf.toFixed(2);
+    riskFreeInput.value = (results.assumptions.riskFree * 100).toFixed(2);
+
+    riskOriginal = results.assumptions.discount;
+
+    mktCaptoSP = results.share_price / results.goal;
+
+    //selet cases
+    if( results.future_growth && results.past_growth !== null )
+    {
+      if ( results.future_growth > results.past_growth )
+      {
+         highCase = 'Analyst Target';
+        var highGrowth = results.future_growth;
+        var lowCase = 'Past Earnings';
+        lowGrowth = results.past_growth;
+      }
+      else
+      {
+         lowCase = 'Analyst Target';
+        var lowGrowth = results.future_growth;
+        var highCase = 'Past Earnings';
+        highGrowth = results.past_growth;
+      }
+    }
+    else
+    {
+      
+        if ( results.assumptions.riskFree > results.past_growth )
+        {
+          highCase = 'Inflation Rate';
+        var highGrowth = results.assumptions.riskFree;
+        var lowCase = 'Past Earnings';
+         lowGrowth = results.past_growth;
+        }
+        else
+        {
+         lowCase = 'Inflation Rate';
+        var lowGrowth = results.assumptions.riskFree;
+        var highCase = 'Past Earnings';
+         highGrowth = results.past_growth;
+        }
+    }
+
+    
+
+    
+    document.getElementById('heading').innerHTML = "To justify a price of <strong>$" + results.share_price + "</strong> " + stock + " would need to grow earnings by ";
+
+  //document.getElementById('heading1').innerHTML = "The current share price is <strong>$" + results.share_price + "</strong>";
+  document.getElementById('heading2').innerHTML = stock + " Valuation";
+document.getElementById('subTitle').innerHTML = "How much do you think " + results.name + " can grow?";
+
+document.getElementById('context').innerHTML = "If you think " + stock + " will grow more than " + growthInput.value + "%, the market is undervaluing the stock.";
+
+    document.getElementById('heading4').innerHTML = "Theoretically the perpetual growth rate can not exceed that of the economy. The 10 year government bond rate is typically used as a proxy for this, currently " + riskFreeInput.value + "% per year. Remember this is discounted to todays money the value over time becomes negligible.";
+
+  let text = `<p><strong>To put this into perspective:</strong></p>
+               <ul><li>${lowCase} growth @ <strong>${lowGrowth.toFixed(2)}%</strong> per year</li>
+              <li>${highCase} growth @ <strong>${highGrowth.toFixed(2)}%</strong> per year</li>
+              <li>The ${results.ind_name} industry grew <strong>${(results.ind_growth*100).toFixed(2)}%</strong> last year</li>
+              <li>Only 10% of companies sustain 20% annual growth for more than 3 years</li></ul>`;
+    document.getElementById('resultsArea').innerHTML = text;
+
+    document.getElementById('most-recent').innerHTML = "$" + fcfInput.value;
+
+    if(results.loss_making){
+      document.getElementById('loss-warning').innerHTML = stock + " is currently loss making which means we have to make some assumptions on their earnings to calculate their value.";
+    }
+
+    //weird hack to replace low case with target if exits
+    lowGrowth = results.price_target;
+  
+    // updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock);
+
+    // growthSlide.onchange = function() {
+    //     growthInput.value = this.value;
+    //     updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock);
+    // }
+
+
+
+// riskSlide.onchange = function() {
+//     riskInput.value = this.value;
+//     updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, results.share_price);
+// }
+
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+    var context = this, args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+};
+
+// var updateBounce = debounce( function(){
+//     growthInput.value = growthSlide.value;
+//      updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock);
+    
+//     console.log("bounce again");
+// }, 250)
+
+
+// growthSlide.addEventListener("input", updateBounce, false);
+console.log((growthInput.value + 50) / 250, growthInput.value, ( (growthInput.value + 50) / 250 * 250) - 50);
+
+new Dragdealer('just-a-slider', {
+    x: (parseFloat(growthInput.value) + 50) / 250,
+    animationCallback: function(x, y) {
+      //$('#just-a-slider .value').text(Math.round(x * 100));
+      var newGrowth = (x * 250) - 50;
+      document.getElementById('just-a-slider-text').innerHTML = newGrowth.toFixed(1) + '%';
+      growthInput.value = newGrowth.toFixed(1);
+      
+     updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, results.share_price);
+
+    }
+  });
+
+new Dragdealer('risk-slider', {
+    x: (parseFloat(riskInput.value) - 8) / 6,
+    animationCallback: function(x, y) {
+
+      var newRisk = (x * 6) + 8;
+      //document.getElementById('risk-text').innerHTML = newRisk.toFixed(1) + '%';
+      riskInput.value = newRisk.toFixed(1);
+      
+     updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, results.share_price);
+
+    }
+  });
+
+new Dragdealer('fcf-slider', {
+    x: (parseFloat(fcfInput.value) / results.revenue),
+    animationCallback: function(x, y) {
+      var newFCF = (x * results.revenue);
+      fcfInput.value = newFCF.toFixed(1);
+      document.getElementById('profit-margin').innerHTML = (x * 100).toFixed(0) + "%";
+      updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, results.share_price);
+    }
+  });
+
+new Dragdealer('perp-slider', {
+    x: (parseFloat(riskFreeInput.value) + 5) / 10,
+    animationCallback: function(x, y) {
+      var newFCF = (x * 10) - 5;
+      riskFreeInput.value = newFCF.toFixed(1);
+      updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, results.share_price);
+    }
+  });
+
+growthInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, results.share_price); }
+riskInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, results.share_price); }
+fcfInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, results.share_price); }
+riskFreeInput.onchange = function() { updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, results.share_price); }
+  
+  document.getElementById('bonus').style.display = "none";
+  
+    
+  } catch(err) {
+    // catches errors both in fetch and response.json
+    console.log(err);
+    let text = "Either I can't find it, or its not free cash flow positive... sorry, try another stock 😞";
+
+    document.getElementById('resultsArea').innerHTML = text;
+
+  }
+
+
+  
+
+  
+}
+
+
+</script>

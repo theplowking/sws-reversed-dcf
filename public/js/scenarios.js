@@ -16,15 +16,14 @@ function updateDCF(targetPrice, highGrowth, lowCase, highCase, riskOriginal, mkt
 
     //document.getElementById('heading').innerHTML = "If " + stock + " grows by " + growthInput.value + "% per year in next 3 years, it should be worth $" + Math.round(results.value * mktCaptoSP,2);
 
-    document.getElementById('heading').innerHTML = "If " + stock + " grows earnings by ";
-
-  document.getElementById('heading0').innerHTML = "it should be worth <strong>$" + (results.value * mktCaptoSP).toFixed(2) + "</strong>.";
+   document.getElementById('heading').innerHTML = "To justify a price of <strong>$" + (results.value * mktCaptoSP).toFixed(2) + "</strong> " + stock + " would need to grow earnings by ";
 	//render the 1st pahse
   document.getElementById('price').innerHTML = "$" + (results.value * mktCaptoSP).toFixed(2);
 
 
-
-	new Chartist.Line('#lineChart', {
+if(document.getElementById('lineChart'))
+{
+  new Chartist.Line('#lineChart', {
         labels: results.labels,
         series: [
           results.series
@@ -37,6 +36,8 @@ function updateDCF(targetPrice, highGrowth, lowCase, highCase, riskOriginal, mkt
         Chartist.plugins.tooltip()
       ]
       });
+}
+	
 
 
 	// lowResult = dcf.CalcValue(lowGrowth, {
