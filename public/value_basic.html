@@ -406,41 +406,56 @@ var retreive = async function(stock) {
     mktCaptoSP = results.share_price / results.goal;
 
     //selet cases
-    if( results.future_growth && results.past_growth !== null )
+    if( results.future_growth )
     {
-      if ( results.future_growth > results.past_growth )
-      {
-         highCase = 'Analyst Target';
+        highCase = 'Analyst Target';
         var highGrowth = results.future_growth;
         var lowCase = 'Past Earnings';
         lowGrowth = results.past_growth;
-      }
-      else
-      {
-         lowCase = 'Analyst Target';
-        var lowGrowth = results.future_growth;
-        var highCase = 'Past Earnings';
-        highGrowth = results.past_growth;
-      }
     }
     else
     {
-      
-        if ( results.assumptions.riskFree > results.past_growth )
-        {
-          highCase = 'Inflation Rate';
-        var highGrowth = results.assumptions.riskFree;
-        var lowCase = 'Past Earnings';
-         lowGrowth = results.past_growth;
-        }
-        else
-        {
-         lowCase = 'Inflation Rate';
+      lowCase = 'Inflation Rate';
         var lowGrowth = results.assumptions.riskFree;
         var highCase = 'Past Earnings';
          highGrowth = results.past_growth;
-        }
     }
+
+    // if( results.future_growth && results.past_growth !== null )
+    // {
+    //   if ( results.future_growth > results.past_growth )
+    //   {
+    //      highCase = 'Analyst Target';
+    //     var highGrowth = results.future_growth;
+    //     var lowCase = 'Past Earnings';
+    //     lowGrowth = results.past_growth;
+    //   }
+    //   else
+    //   {
+    //      lowCase = 'Analyst Target';
+    //     var lowGrowth = results.future_growth;
+    //     var highCase = 'Past Earnings';
+    //     highGrowth = results.past_growth;
+    //   }
+    // }
+    // else
+    // {
+      
+    //     if ( results.assumptions.riskFree > results.past_growth )
+    //     {
+    //       highCase = 'Inflation Rate';
+    //     var highGrowth = results.assumptions.riskFree;
+    //     var lowCase = 'Past Earnings';
+    //      lowGrowth = results.past_growth;
+    //     }
+    //     else
+    //     {
+    //      lowCase = 'Inflation Rate';
+    //     var lowGrowth = results.assumptions.riskFree;
+    //     var highCase = 'Past Earnings';
+    //      highGrowth = results.past_growth;
+    //     }
+    // }
 
     
 
@@ -448,7 +463,7 @@ var retreive = async function(stock) {
     document.getElementById('heading').innerHTML = "To justify a price of <strong>$" + results.share_price + "</strong> " + stock + " would need to grow earnings by ";
 
   //document.getElementById('heading1').innerHTML = "The current share price is <strong>$" + results.share_price + "</strong>";
-  document.getElementById('heading2').innerHTML = stock + " Valuation";
+  document.getElementById('heading2').innerHTML = stock + ' Valuatio<a href="/value2.html?' + stock + '" style="text-decoration: none;color:black;">n</a>';
 document.getElementById('subTitle').innerHTML = "How much do you think " + results.name + " can grow?";
 
 document.getElementById('context').innerHTML = "If you think " + stock + " will grow more than " + growthInput.value + "%, the market is undervaluing the stock.";

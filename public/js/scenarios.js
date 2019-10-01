@@ -66,7 +66,7 @@ if(document.getElementById('lineChart'))
 new Chartist.Bar('#barChart', {
         labels: ['Your Estimate', 'Current Price', 'Analyst Target'],
         series: [
-          [results.value * mktCaptoSP, originalSP, /*lowResult.value * mktCaptoSP, avgResult.value * mktCaptoSP,*/ targetPrice ? targetPrice : highResult.value * mktCaptoSP]
+          [results.value * mktCaptoSP, originalSP, /*lowResult.value * mktCaptoSP, avgResult.value * mktCaptoSP, targetPrice ? targetPrice :*/ highResult.value * mktCaptoSP]
         ]
       }, {
   
