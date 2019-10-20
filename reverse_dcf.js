@@ -99,10 +99,10 @@ var appRouter = function (app) {
 
         if(response.data.analysis.data.extended.data.analysis.past.net_income < 0){ discount=discount+0.02;}
 
-        if(response.data.analysis.data.extended.data.raw_data.data.market_cap.usd < 50000000){ 
+        if(response.data.analysis.data.extended.data.raw_data.data.market_cap.usd < 200000000){ 
             discount=discount+0.02;
         }
-        else if(response.data.analysis.data.extended.data.raw_data.data.market_cap.usd > 100000000){
+        else if(response.data.analysis.data.extended.data.raw_data.data.market_cap.usd > 1000000000){
             discount=discount-0.01
         }
 

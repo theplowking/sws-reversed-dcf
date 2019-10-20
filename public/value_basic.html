@@ -350,10 +350,7 @@ h2{
   
 </body>
 <script>
-var lowGrowth = 2;
-var highGrowth = 15;
-var lowCase = '2% per year';
-var highCase = '15% per year';
+
 var riskOriginal = 0.01;
 var mktCaptoSP = 1;
 
@@ -403,11 +400,7 @@ var retreive = async function(stock) {
     const results = await response.json(); //extract JSON from the http response
     console.log(results);
 
-     // if (results.assumptions.fcf < 0)
-     // {
-     //  //negative FCF
-     //  fcfInput.value = results.revenue * 0.1;
-     // }
+  
     //load the values
     growthInput.value = results.result ? results.result.growth.toFixed(2) : 10;
     riskInput.value = (results.assumptions.discount * 100).toFixed(2);
@@ -417,23 +410,6 @@ var retreive = async function(stock) {
     riskOriginal = results.assumptions.discount;
 
     mktCaptoSP = results.share_price / results.goal;
-
-    //selet cases
-    if( results.future_growth )
-    {
-        highCase = 'Analyst Target';
-        var highGrowth = results.future_growth;
-        var lowCase = 'Past Earnings';
-        lowGrowth = results.past_growth;
-    }
-    else
-    {
-      lowCase = 'Inflation Rate';
-        var lowGrowth = results.assumptions.riskFree;
-        var highCase = 'Past Earnings';
-         highGrowth = results.past_growth;
-    }
-
     
 
     
