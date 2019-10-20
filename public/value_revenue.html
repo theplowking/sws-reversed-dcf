@@ -134,14 +134,12 @@ h2{
 
   <p id="subTitle" style="text-align: center;">How much do you think X can grow?</p>
 
-    <p id="loss-warning" style="color: red;"></p>
-
   <div id="barChart" class="ct-chart ct-minor-seventh" style="height:150px;"></div>
 
 <div style="background: #e5e5e5;
     padding: 10px;
     text-align: center;">
-        <h2 style="text-align: left;margin-bottom: 0;">Price ↔️ Growth Estimate</h2>
+        <h2 style="text-align: left;margin-bottom: 0;">Price ↔️ Revenue Growth Estimate</h2>
 
         <div class="half" style="text-align: left;">
           <ul style="margin: 0;padding: 5px;">
@@ -184,7 +182,7 @@ h2{
               <div class="metricText">&nbsp;&nbsp;&nbsp;&nbsp;|<br>-50%</div>
             </div>
             <div  class="metric">
-              <div class="metricText"><br>Earnings Growth Rate</div>
+              <div class="metricText"><br>Revenue Growth Rate</div>
             </div>
             <div  class="metric" style="text-align: right;">
               <div class="metricText">|&nbsp;&nbsp;&nbsp;&nbsp;<br>200%</div>
@@ -200,13 +198,59 @@ h2{
         </div>
 
 
+<h4>10 year Earnings and Revenue Forecast</h4>
+  <div id="lineChart" class="ct-chart ct-minor-seventh" style="height:200px;"></div>
+
 
   <p>
+    <p id="loss-warning" style="color: red;"></p>
 
  <a href="#" onClick="showDiv();">Show the assumptions used in this model</a>
 </p>
 <div id="bonus" style="display: block;" >
 
+
+<!--  Revenue SLIDER -->
+
+
+<div >
+        <h4>Profit Margin in 10 years</h4>
+        <div class="metricHolder">
+          
+          <div  class="metric">
+            <div class="metricText">Your Estimate</div>
+            <div class="metricValue" ><input type="text" id="marginInput" style="width: 80px;font-size: 30px">%</div>
+          </div>
+
+          
+      <div id="fcf-slider" class="just-a-slider dragdealer">
+          <div class="handle red-bar">
+            <span class="actuator">|||</span>
+          </div>
+        </div>
+<br>
+      <div class="metricHolder" style="max-width: 740px;
+    width: 80%;
+    min-width: 320px;margin: 0 auto">
+          <div  class="metric" style="text-align: left;">
+            <div class="metricText">&nbsp;&nbsp;&nbsp;&nbsp;|<br>0% Revenue</div>
+          </div>
+          <div  class="metric">
+            <div class="metricText"><br>Profit Margin</div>
+          </div>
+          <div  class="metric" style="text-align: right;">
+            <div class="metricText">|&nbsp;&nbsp;&nbsp;&nbsp;<br>100% Revenue</div>
+          </div>
+        </div>
+<p>To put the profit margin in 10 years into perspective:</p>
+<ul>
+  <li>The S&P on average has a profit margin of 15.2%</li>
+  <li>Apple has a profit margin of 23%</li>
+  <li>Samsung has a profit margin of 9.2%</li>
+  <li>AT&T has a profit margin of 9%</li>
+  <li>Walmart has a profit margin of 3.7%</li>
+</ul>
+</div>
 
  <!--  RISK SLIDER -->
 
@@ -245,47 +289,7 @@ h2{
 
 </div>
 
-<!--  EARNINGS SLIDER -->
 
-
-<div >
-        <h4>Current Annual Earnings (millions)</h4>
-        <div class="metricHolder">
-          
-          <div  class="metric">
-            <div class="metricText">Your Estimate</div>
-            <div class="metricValue" >$<input type="text" id="fcfInput" style="width: 80px;font-size: 30px"></div>
-          </div>
-          <div  class="metric" >
-            <div class="metricText">Profit Margin</div>
-            <div class="metricValue" id="profit-margin">0%</div>
-          </div>
-          <div  class="metric">
-            <div class="metricText">Last 12 Months</div>
-            <div class="metricValue" id="most-recent">$0</div>
-          </div>
-        </div>
-      <div id="fcf-slider" class="just-a-slider dragdealer">
-          <div class="handle red-bar">
-            <span class="actuator">|||</span>
-          </div>
-        </div>
-<br>
-      <div class="metricHolder" style="max-width: 740px;
-    width: 80%;
-    min-width: 320px;margin: 0 auto">
-          <div  class="metric" style="text-align: left;">
-            <div class="metricText">&nbsp;&nbsp;&nbsp;&nbsp;|<br>0% Revenue</div>
-          </div>
-          <div  class="metric">
-            <div class="metricText"><br>Profit Margin</div>
-          </div>
-          <div  class="metric" style="text-align: right;">
-            <div class="metricText">|&nbsp;&nbsp;&nbsp;&nbsp;<br>100% Revenue</div>
-          </div>
-        </div>
-
-</div>
 
 
 <!--  LONG TERM SLIDER -->
@@ -335,10 +339,15 @@ h2{
         <input type="text" id="linearYearsInput" style="width: 50px;font-size: 30px" value=3>
 </div>
 
+<div >
+        <h4>Revenue Today</h4>
+        <input type="text" id="revenueInput" style="width: 150px;font-size: 30px" value=3>
+</div>
 
-<h4>10 year Earnings and Revenue Forecast</h4>
-  <div id="lineChart" class="ct-chart ct-minor-seventh" style="height:200px;"></div>
-
+<div >
+        <h4>Margin Today</h4>
+        <input type="text" id="startMarginInput" style="width: 50px;font-size: 30px" value=3>
+</div>
 
   
 
@@ -361,7 +370,9 @@ var growthSlide = document.getElementById('growthSlider'),
     growthInput = document.getElementById("growthInput"),
     riskSlide = document.getElementById('riskSlider'),
     riskInput = document.getElementById("riskInput"),
-    fcfInput = document.getElementById("fcfInput"),
+    marginInput = document.getElementById("marginInput"),
+    revenueInput = document.getElementById("revenueInput"),
+    startMarginInput = document.getElementById("startMarginInput"),
     riskFreeInput = document.getElementById("riskFreeInput");
 
 function showDiv()
@@ -393,7 +404,7 @@ var retreive = async function(stock) {
   document.getElementById('persp').innerHTML = "Fetching "+stock+" for you...";
 
   try {
-    const response = await fetch("/reverse_dcf?stock="+stock);
+    const response = await fetch("/reverse_dcf_revenue?stock="+stock);
 
     if(response.status!==200)
        {
@@ -406,12 +417,15 @@ var retreive = async function(stock) {
      // if (results.assumptions.fcf < 0)
      // {
      //  //negative FCF
-     //  fcfInput.value = results.revenue * 0.1;
+     //  marginInput.value = results.revenue * 0.1;
      // }
     //load the values
     growthInput.value = results.result ? results.result.growth.toFixed(2) : 10;
     riskInput.value = (results.assumptions.discount * 100).toFixed(2);
-    fcfInput.value = results.assumptions.fcf.toFixed(2);
+    marginInput.value = (results.assumptions.end_margin * 100).toFixed(2);
+
+    revenueInput.value = results.assumptions.revenue;
+    startMarginInput.value = results.assumptions.start_margin * 100;
     riskFreeInput.value = (results.assumptions.riskFree * 100).toFixed(2);
 
     riskOriginal = results.assumptions.discount;
@@ -423,43 +437,43 @@ var retreive = async function(stock) {
     {
         highCase = 'Analyst Target';
         var highGrowth = results.future_growth;
-        var lowCase = 'Past Earnings';
+        var lowCase = 'Past Revenue';
         lowGrowth = results.past_growth;
     }
     else
     {
       lowCase = 'Inflation Rate';
         var lowGrowth = results.assumptions.riskFree;
-        var highCase = 'Past Earnings';
+        var highCase = 'Past Revenue';
          highGrowth = results.past_growth;
     }
 
     
 
     
-    document.getElementById('heading').innerHTML = "Based on the assumptions to justify a price of <strong>$" + results.share_price + "</strong> " + stock + " would need to grow earnings by ";
+    document.getElementById('heading').innerHTML = "To justify a price of <strong>$" + results.share_price + "</strong> " + stock + " would need to grow Revenue by ";
 
   //document.getElementById('heading1').innerHTML = "The current share price is <strong>$" + results.share_price + "</strong>";
-  document.getElementById('heading2').innerHTML = stock + ' Valuatio<a href="/value2.html?' + stock + '" style="text-decoration: none;color:black;">n</a>';
-document.getElementById('subTitle').innerHTML = "How much do you think " + results.name + " can grow earnings?";
+  document.getElementById('heading2').innerHTML = stock + ' Revenue Valuatio<a href="/value2.html?' + stock + '" style="text-decoration: none;color:black;">n</a>';
+document.getElementById('subTitle').innerHTML = "How much do you think " + results.name + " can grow revenue?";
 
 document.getElementById('context').innerHTML = "If you think " + stock + " will grow more than " + growthInput.value + "%, the market is undervaluing the stock.";
 
     document.getElementById('heading4').innerHTML = "Theoretically the perpetual growth rate can not exceed that of the economy. The 10 year government bond rate is typically used as a proxy for this, currently " + riskFreeInput.value + "% per year. Remember this is discounted to todays money the value over time becomes negligible.";
 
   let text = `<p><strong>To put this into perspective:</strong></p>
-               <ul><li>Last year earnings grew @ <strong>${results.past_growth_1y.toFixed(2)}%</strong></li>
-               <li>On average over the past 5 years earnings grew @ <strong>${results.past_growth.toFixed(2)}%</strong> per year</li>
-              <li>The most bullish analyst expects earnings to grow @ <strong>${results.result_high.growth.toFixed(2)}%</strong> per year</li>
-              <li>The most bearish analyst expects earnings to grow @ <strong>${results.result_low.growth.toFixed(2)}%</strong> per year</li>
-              <li>The ${results.ind_name} industry grew earnings <strong>${(results.ind_growth*100).toFixed(2)}%</strong> last year, and the S&P 500 grew 17.2%</li>
+               <ul>
+               <li>In 10 years time ${stock} would be doing $<span id='growthin10'>${results.result.series[1][9].toFixed(0)}</span> million in revenue, they currently do $${results.assumptions.revenue.toFixed(0)} million.</li>
+               <li>Last year Revenue grew @ <strong>${results.past_growth_1y.toFixed(2)}%</strong></li>
+               <li>On average over the past 5 years Revenue grew @ <strong>${results.past_growth.toFixed(2)}%</strong> per year</li>
+              <li>The most bullish analyst expects Revenue to grow @ <strong>${results.result_high.growth.toFixed(2)}%</strong> per year</li>
+              <li>The most bearish analyst expects Revenue to grow @ <strong>${results.result_low.growth.toFixed(2)}%</strong> per year</li>
+              <li>The ${results.ind_name} industry grew <strong>${(results.ind_growth*100).toFixed(2)}%</strong> last year</li>
               <li>Only 10% of companies sustain 20% annual growth for more than 3 years</li></ul>`;
     document.getElementById('resultsArea').innerHTML = text;
 
-    document.getElementById('most-recent').innerHTML = "$" + fcfInput.value;
-
     if(results.loss_making){
-      document.getElementById('loss-warning').innerHTML = "<a href='/value_revenue.html?" + stock + "' >" + stock + " is currently loss making, we recommend using our revenue valuation tool instead.</a?";
+      document.getElementById('loss-warning').innerHTML = stock + " is currently loss making which means we have to make some assumptions on their earnings and revenue to calculate their value.";
     }
 
 
@@ -479,7 +493,7 @@ function debounce(func, wait, immediate) {
 };
 
 function updatePage(){
-  updateDCF(results.result_low.growth, results.result_high.growth, results.price_target_low, results.price_target_high, riskOriginal, mktCaptoSP, stock, results.share_price, false);
+  updateDCF(results.result_low.growth, results.result_high.growth, results.price_target_low, results.price_target_high, riskOriginal, mktCaptoSP, stock, results.share_price, results.loss_making);
 }
 
 new Dragdealer('just-a-slider', {
@@ -509,11 +523,9 @@ new Dragdealer('risk-slider', {
   });
 
 new Dragdealer('fcf-slider', {
-    x: (parseFloat(fcfInput.value) / results.revenue),
+    x: (marginInput.value / 100),
     animationCallback: function(x, y) {
-      var newFCF = (x * results.revenue);
-      fcfInput.value = newFCF.toFixed(1);
-      document.getElementById('profit-margin').innerHTML = (x * 100).toFixed(0) + "%";
+      marginInput.value = (x * 100).toFixed(1);
       updatePage();
     }
   });
@@ -529,11 +541,11 @@ new Dragdealer('perp-slider', {
 
 growthInput.onchange = function() { updatePage(); }
 riskInput.onchange = function() { updatePage(); }
-fcfInput.onchange = function() { updatePage(); }
+marginInput.onchange = function() { updatePage(); }
 riskFreeInput.onchange = function() { updatePage(); }
 document.getElementById('linearYearsInput').onchange = function() { updatePage(); }
   
-  document.getElementById('bonus').style.display = "none";
+  //document.getElementById('bonus').style.display = "none";
   
     
   } catch(err) {

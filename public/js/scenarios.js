@@ -1,22 +1,31 @@
 
 
-function updateDCF(targetPrice, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, originalSP)
+function updateDCF(lowGrowth, highGrowth, lowCase, highCase, riskOriginal, mktCaptoSP, stock, originalSP, loss_making)
 {
 
-	let results = dcf.CalcValue(growthInput.value, {
+  if(loss_making){
+     results = dcf.CalcValue(growthInput.value, {
+                    'discount': riskInput.value / 100, 
+                    'revenue': revenueInput.value,
+                    'start_margin': startMarginInput.value / 100, 
+                    'end_margin': marginInput.value / 100,  
+                    'riskFree': riskFreeInput.value / 100,
+                    'linear_years': document.getElementById('linearYearsInput').value
+                }, true);
+
+document.getElementById('growthin10').innerHTML = results.series[1][9];
+
+  }
+  else{
+     results = dcf.CalcValue(growthInput.value, {
                 'discount': riskInput.value / 100, 
                 'fcf': fcfInput.value, 
-                'riskFree': riskFreeInput.value / 100
-            });
+                'riskFree': riskFreeInput.value / 100,
+                'linear_years': document.getElementById('linearYearsInput').value
+            }, false);
+  }
 	
-
-
-
-    document.getElementById('growthin10').innerHTML = `${ (results.series[9].value / fcfInput.value).toFixed(1) }x`;
-
-    //document.getElementById('heading').innerHTML = "If " + stock + " grows by " + growthInput.value + "% per year in next 3 years, it should be worth $" + Math.round(results.value * mktCaptoSP,2);
-
-   document.getElementById('heading').innerHTML = "To justify a price of <strong>$" + (results.value * mktCaptoSP).toFixed(2) + "</strong> " + stock + " would need to grow earnings by ";
+   document.getElementById('heading').innerHTML = "Based on the assumptions to justify a price of <strong>$" + (results.value * mktCaptoSP).toFixed(2) + "</strong> " + stock + " would need to grow earnings by ";
 	//render the 1st pahse
   document.getElementById('price').innerHTML = "$" + (results.value * mktCaptoSP).toFixed(2);
 
@@ -25,9 +34,7 @@ if(document.getElementById('lineChart'))
 {
   new Chartist.Line('#lineChart', {
         labels: results.labels,
-        series: [
-          results.series
-        ]
+        series: results.series
       }, {
       low: 0,
       showArea: true,
@@ -38,35 +45,12 @@ if(document.getElementById('lineChart'))
       });
 }
 	
-
-
-	// lowResult = dcf.CalcValue(lowGrowth, {
- //                'discount': riskOriginal, 
- //                'fcf': fcfInput.value, 
- //                'riskFree': riskFreeInput.value / 100
- //            });
-
-    highResult = dcf.CalcValue(highGrowth, {
-                'discount': riskOriginal, 
-                'fcf': fcfInput.value, 
-                'riskFree': riskFreeInput.value / 100
-            });
-
-
-
- //    avgResult = dcf.CalcValue((lowGrowth + highGrowth) / 2, {
- //                'discount': riskOriginal, 
- //                'fcf': fcfInput.value, 
- //                'riskFree': riskFreeInput.value / 100
- //            });
-
-
 	//render the bar
 
 new Chartist.Bar('#barChart', {
-        labels: ['Your Estimate', 'Current Price', 'Analyst Target'],
+        labels: ['Your Estimate', 'Current Price', 'Analyst Target Low', 'Analyst Target High'],
         series: [
-          [results.value * mktCaptoSP, originalSP, /*lowResult.value * mktCaptoSP, avgResult.value * mktCaptoSP, targetPrice ? targetPrice :*/ highResult.value * mktCaptoSP]
+          [results.value * mktCaptoSP, originalSP, lowCase, highCase]
         ]
       }, {
   
