@@ -463,7 +463,7 @@ document.getElementById('context').innerHTML = "If you think " + stock + " will 
 
   let text = `<p><strong>To put this into perspective:</strong></p>
                <ul>
-               <li>In 10 years time ${stock} would be doing $<span id='growthin10'>${results.result.series[1][9].toFixed(0)}</span> million in revenue, they currently do $${results.assumptions.revenue.toFixed(0)} million.</li>
+               <li>In 10 years time ${stock} would be doing $<span id='growthin10'>${results.result ? results.result.series[1][9].toFixed(0) : 0}</span> million in revenue, they currently do $${results.assumptions.revenue.toFixed(0)} million.</li>
                <li>Last year Revenue grew @ <strong>${results.past_growth_1y.toFixed(2)}%</strong></li>
                <li>On average over the past 5 years Revenue grew @ <strong>${results.past_growth.toFixed(2)}%</strong> per year</li>
               <li>The most bullish analyst expects Revenue to grow @ <strong>${results.result_high.growth.toFixed(2)}%</strong> per year</li>

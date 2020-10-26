@@ -129,8 +129,8 @@ var appRouter = function (app) {
             price_target_high: response.data.analysis.data.extended.data.analysis.value.price_target_high,
             price_target_low: response.data.analysis.data.extended.data.analysis.value.price_target_low,
             loss_making: false,
-            ind_growth: response.data.analysis.data.extended.data.statements.past.VsMarketGrowthStatement.data.eps_growth_industry,
-            ind_name: response.data.analysis.data.extended.data.statements.past.VsMarketGrowthStatement.data.industry_name
+            ind_growth: response.data.analysis.data.extended.data.industry_averages.pastOneYearGrowth,
+            ind_name: response.data.analysis.data.extended.data.raw_data.data.industries.tertiary.name
         };
 
 
@@ -203,10 +203,10 @@ var appRouter = function (app) {
             future_growth: 100 * response.data.analysis.data.extended.data.analysis.future.revenue_growth_annual,
             analyst_count: response.data.analysis.data.extended.data.analysis.misc.analyst_count,
             price_target_high: response.data.analysis.data.extended.data.analysis.value.price_target_high,
-            price_target_low: response.data.analysis.data.extended.data.analysis.value.price_target_low,
+            price_target_low: response.data.analysis.data.extended.data.analysis.value.price_target_high,
             loss_making: true,
-            ind_growth: response.data.analysis.data.extended.data.statements.past.VsMarketGrowthStatement.data.eps_growth_industry,
-            ind_name: response.data.analysis.data.extended.data.statements.past.VsMarketGrowthStatement.data.industry_name
+            ind_growth: response.data.analysis.data.extended.data.industry_averages.pastOneYearGrowth,
+            ind_name: response.data.analysis.data.extended.data.raw_data.data.industries.tertiary.name
         };
 
         inputs.result = goalSeek(inputs.assumptions, inputs.goal, true);
