@@ -3,6 +3,7 @@ var errors = require('request-promise/errors');
 var argv = require('minimist')(process.argv.slice(2));
 var dcf = require('./public/js/dcf.js');
 
+//testing call
 run('ASX:TLS');
 
 function run(stock)
