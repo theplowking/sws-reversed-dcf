@@ -167,8 +167,8 @@ var appRouter = function (app) {
 
     console.log(stock);
 
-    //rp(options(stock))
-   fakeIt().then(function (response) {
+    rp(options(stock)).then(function (response) {
+   //fakeIt().then(function (response) {
 
         let discount = 0.1; // start from 10% discount rate
 
